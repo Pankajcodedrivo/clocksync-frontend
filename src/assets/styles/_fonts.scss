@@ -1,0 +1,25 @@
+@font-face {
+    font-family: 'helvetica';
+    src: url('../fonts/helvetica-webfont.eot');
+    src: url('../fonts/helvetica-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/helvetica-webfont.woff2') format('woff2'),
+         url('../fonts/helvetica-webfont.woff') format('woff'),
+         url('../fonts/helvetica-webfont.ttf') format('truetype'),
+         url('../fonts/helvetica-webfont.svg#helveticaregular') format('svg');
+    font-weight: 400;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'helveticacompressed';
+    src: url('../fonts/helvetica-compressed-webfont.eot');
+    src: url('../fonts/helvetica-compressed-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/helvetica-compressed-webfont.woff2') format('woff2'),
+         url('../fonts/helvetica-compressed-webfont.woff') format('woff'),
+         url('../fonts/helvetica-compressed-webfont.ttf') format('truetype'),
+         url('../fonts/helvetica-compressed-webfont.svg#helveticacompressed') format('svg');
+    font-weight: 400;
+    font-style: normal;
+
+}

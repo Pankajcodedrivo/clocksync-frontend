@@ -1,0 +1,119 @@
+@import "./variables";
+@import "./fonts";
+@import "./header";
+@import "./footer";
+@import "./home";
+@import "./table";
+@import "./score-keeper";
+
+body,
+html {
+    overflow-x: hidden;
+}
+
+body {
+    font-family: $montserrat;
+    font-weight: 400;
+    font-size: 16px;
+    font-style: normal;
+    line-height: 1.6;
+    color: $color-white;
+    background: url('../images/background.jpg') no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    line-height: 1.2;
+    font-family: $helveticacompressed;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+    margin-bottom: 10px;
+}
+
+ul,
+li,
+ol {
+    margin-bottom: 0;
+    list-style-type: none;
+}
+
+a {
+    text-decoration: none;
+    -webkit-transition: all 0.5s;
+    -o-transition: all 0.5s;
+    transition: all 0.5s;
+    color: $color-white;
+}
+
+img {
+    max-width: 100%;
+}
+
+h1 {
+    font-size: 48px;
+    font-weight: 500;
+}
+
+h3 {
+    font-size: 24px;
+    font-weight: 500;
+}
+
+ul {
+    padding: 0;
+}
+
+input.form-control:focus {
+    box-shadow: none;
+    border-color: $color-blue;
+}
+.container.small-container {
+    @media only screen and (min-width: 1300px) {
+        max-width: 1100px;
+    }
+}
+
+.btn {
+    border-radius: 5px;
+    padding: 13px 25px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+    border: 0;
+    line-height: 0.8;
+    transition: all 0.5s;
+    &.btn-primary {
+    background: $color-orange;
+    color: $color-white;
+    &:hover {
+        background: $color-blue;
+    }
+}
+}
+

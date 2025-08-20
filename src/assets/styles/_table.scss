@@ -1,0 +1,43 @@
+.table {
+    width: 100%;
+    margin-bottom: 0;
+
+    tr {
+        &:hover {
+            td {
+               opacity: 0.7;
+            }
+        }
+
+        th {
+            background: transparent;
+            border: 0;
+            color: $color-white;
+            padding: 15px 50px;
+            font-size: 16px;
+            font-weight: 700;
+            font-family: $helvetica;
+        }
+
+        td {
+            background: $color-gray;
+            border: 0;
+            border-bottom: 5px solid $color-body;
+            color: $color-white;
+            padding: 15px 50px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.4s;
+
+            &:first-child {
+                border-top-left-radius: 10px;
+                border-bottom-left-radius: 10px;
+            }
+
+            &:last-child {
+                border-top-right-radius: 10px;
+                border-bottom-right-radius: 10px;
+            }
+        }
+    }
+}
