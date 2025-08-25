@@ -6,10 +6,19 @@
     display: inline-flex;
     flex-wrap: wrap;
     gap: 20px;
-
+    @media only screen and (max-width: 991px) {
+        gap: 10px;
+    }
+      @media only screen and (max-width: 767px) {
+    justify-content: center;
+  }
     .btn {
         height: 40px;
         min-width: 135px;
+        @media only screen and (max-width: 575px) {
+            min-width: 120px;
+            padding: 12px 10px;
+        }
     }
 
     select {
@@ -36,16 +45,40 @@
         &.ngo-select {
             max-width: 171px;
             min-width: 171px;
+            @media only screen and (max-width: 991px) {
+                max-width: 150px;
+                min-width: 150px;
+            }
+            @media only screen and (max-width: 575px) {
+                max-width: 140px;
+                min-width: 140px;
+            }
         }
 
         &.name {
             max-width: 171px;
             min-width: 171px;
+            @media only screen and (max-width: 991px) {
+                max-width: 150px;
+                min-width: 150px;
+            }
+             @media only screen and (max-width: 575px) {
+                max-width: 140px;
+                min-width: 140px;
+            }
         }
 
         &.mins-select {
             max-width: 100px;
             min-width: 100px;
+            @media only screen and (max-width: 991px) {
+                max-width: 80px;
+                min-width: 80px;
+            }
+            @media only screen and (max-width: 575px) {
+                max-width: 70px;
+                min-width: 70px;
+            }
         }
 
         &::placeholder {
@@ -68,6 +101,18 @@
     gap: 21px;
     margin-top: 30px;
     justify-content: space-between;
+    @media only screen and (max-width: 1400px) {
+        gap: 6px;
+    }
+    @media only screen and (max-width: 767px) {
+        justify-content: center;
+        display: inline-flex;
+        gap: 10px;
+    }
+    @media only screen and (max-width: 420px) {
+        width: 100%;
+        justify-content: space-between;
+    }
     .time-select {
         display: flex;
         gap: 10px;
@@ -89,6 +134,12 @@
             background-position: right 10px center;
             min-width: 70px;
             max-width: 70px;
+            @media only screen and (max-width: 991px) {
+                padding: 4px 6px;
+                min-width: 60px;
+                max-width: 60px;
+                font-size: 12px;
+            }
         }
     }
 
@@ -98,12 +149,25 @@
         display: flex;
         align-items: center;
         gap: 5px;
+        @media only screen and (max-width: 1400px) {
+            font-size: 12px;
+        }
+        span {
+            min-width: 20px;
+            @media only screen and (max-width: 991px) {
+            min-width: 15px;
+        }
+        }
     }
 
     .play-btn {
         padding: 0;
         background: transparent;
         border: 0;
+        min-width: 24px;
+        @media only screen and (max-width: 991px) {
+            min-width: 18px;
+        }
     }
 }
 
@@ -123,6 +187,13 @@
         max-width: 38px;
         line-height: 0.8;
         -moz-appearance: textfield;
+        text-align: center;
+        @media only screen and (max-width: 991px) {
+            font-size: 60px;
+        }
+        @media only screen and (max-width: 767px) {
+            font-size: 48px;
+        }
         &::placeholder {
             color: $color-white;
         }
@@ -145,5 +216,18 @@ linear-gradient(0deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0));
         display: flex;
         align-items: center;
         justify-content: center;
+        @media only screen and (max-width: 991px) {
+            width: 30px;
+            height: 30px;
+            min-width: 30px;
+        }
+        @media only screen and (max-width: 767px) {
+            width: 24px;
+            height: 24px;
+            min-width: 24px;
+            img {
+                width: 15px;
+            }
+        }
     }
 }

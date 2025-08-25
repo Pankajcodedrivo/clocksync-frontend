@@ -43,7 +43,7 @@ export default function Home() {
                             <Add img={add1} />
                         </div>
                     </div>
-                    <div className="cmn-box">
+                    <div className="cmn-box mb-0">
                         <h2>Live Stats Tracker</h2>
                         <LiveStatsTracker />
                     </div>

@@ -2,6 +2,7 @@ import ActivePenalties from "../components/ActivePenalties";
 import GameStatisticsScoreKeeper from "../components/GameStatisticsScoreKeeper";
 import LiveStatsTracker from "../components/LiveStatsTracker";
 import ScoreKeeperComponent from "../components/ScoreKeeperComponent";
+import AccArrow from "../assets/images/down-arrow-blue.svg"
 export default function ScoreKeeper() {
     return (
         <div className="wrapper">
@@ -64,11 +65,17 @@ export default function ScoreKeeper() {
                     </div>
                     <div className="cmn-box">
                         <h2>Game Statistics</h2>
-                        <GameStatisticsScoreKeeper />
+                        <button type="button" data-bs-toggle="collapse" data-bs-target="#game-statistics" className="acc-arrow"><img src={AccArrow} alt="" /></button>
+                        <div className="collapse" id="game-statistics">
+                            <GameStatisticsScoreKeeper />
+                        </div>
                     </div>
-                    <div className="cmn-box">
+                    <div className="cmn-box mb-0">
                         <h2>Live Stats Tracker</h2>
-                        <LiveStatsTracker />
+                        <button type="button" data-bs-toggle="collapse" data-bs-target="#live-stats-tracker" className="acc-arrow"><img src={AccArrow} alt="" /></button>
+                        <div className="collapse" id="live-stats-tracker">
+                            <LiveStatsTracker />
+                        </div>
                     </div>
                 </div>
             </section>
