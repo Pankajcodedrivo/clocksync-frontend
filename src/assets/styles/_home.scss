@@ -1,6 +1,8 @@
 .add-sec {
-  margin-top: 30px;
-
+  padding: 30px 0;
+  .add-otr {
+    padding: 0 40px;
+  }
   .add-img {
     img {
       width: 100%;
@@ -9,33 +11,21 @@
 }
 
 .score-board-sec {
-  padding: 50px 0 0;
+  padding: 30px 0 0;
   position: relative;
   z-index: 1;
-
   .score-card-innr {
     &:nth-child(2) {
-      .score-card {
-        margin-top: 0;
-      }
+      margin-left: -40px;
+      margin-right: -40px;
+       position: relative;
+        z-index: 1;
     }
   }
-
-  .score-keeper {
-    .score-card-innr {
-      &:nth-child(2) {
-        .score-card {
-          padding: 20px 0 0;
-        }
-      }
-    }
-  }
-
   .left,
   .right {
     position: absolute;
-    top: 55%;
-    transform: translateY(-45%);
+    top: 0;
     z-index: -1;
   }
 
@@ -59,36 +49,38 @@
 
   .hdr {
     margin-bottom: 130px;
+    h1 {
+      margin-bottom: 0;
+    }
+  }
+  .score-top {
     position: relative;
-
+    z-index: 1;
+    padding:0 20px 30px;
     &:after {
       position: absolute;
       content: '';
       background: url('../images/color-grow.png') no-repeat;
       background-size: 100% 100%;
-      width: 148px;
-      height: 150px;
-      bottom: -135px;
+      width: 100%;
+      height: 100%;
+      top: 0;
       left: 0;
       right: 0;
       margin: auto;
-    }
-
-    h1 {
-      margin-bottom: 0;
+      z-index:-1;
     }
   }
-
   .score-card {
     background: linear-gradient(180deg, #0F172A 0%, #0F172A 37.37%, #0F172A 82.23%);
-    padding: 20px 20px 50px;
+    // padding: 20px 70px 50px;
+    padding: 20px 0 0;
     text-align: center;
     color: $color-white;
     min-height: 200px;
     position: relative;
-    margin-top: 31px;
     height: 100%;
-
+    box-shadow: 0px 50px 130px 0px rgba(0, 0, 0, 0.3);
     &:after {
       position: absolute;
       content: '';
@@ -104,9 +96,11 @@
     h3 {
       padding-bottom: 10px;
       border-bottom: 1px solid #FFFFFF12;
-      margin-bottom: 50px;
+      margin: 0 70px 30px;
     }
-
+    .score-content {
+      padding: 0 15px 50px;
+    }
     ul {
       li {
         margin-bottom: 7px;
@@ -126,36 +120,61 @@
   }
 
   .timer {
-    font-size: 60px;
-    font-weight: 400;
-    background: #192644;
-    box-shadow: -5px -5px 10px 0px #041B40 inset;
-    color: $color-white;
-    padding: 10px;
-    border-radius: 10px;
-    display: inline-block;
-    margin-bottom: 10px;
-    font-family: $helveticacompressed;
-    line-height: 0.8;
-  }
-
-  .score-icon {
-    width: 100px;
-    height: 100px;
     display: flex;
+    gap: 5px;
     align-items: center;
     justify-content: center;
-    border-radius: 20px;
-    background: $color-back;
-    margin-left: auto;
-    margin-right: auto;
-    position: absolute;
-    z-index: 1;
-    left: 0;
-    right: 0;
-    top: -100px;
+    font-size:80px;
+    color: $color-white;
+    font-family: $digital-7;
+    font-weight: 400;
+    line-height: 0.8;
+    .digit {
+      display: inline-block;
+      text-align: right;
+      position: relative;
+      z-index: 1;
+      min-width: 35px;
+      &:after {
+        position: absolute;
+        z-index: -1;
+        font-size:80px;
+        content: '8';
+        font-family: $digital-7;
+        color: #041B40;
+        right: 0;
+        left: 0;
+        top: 0;
+        bottom: 0;
+      }
+    }
+
+    .colon {
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
   }
-}
+    .score-icon {
+      width: 100px;
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 20px;
+      background:$color-2;
+      margin-left: auto;
+      margin-right: auto;
+      position: absolute;
+      z-index: 1;
+      left: 0;
+      right: 0;
+      top: -100px;
+    }
+  }
 
 .sub-hdr {
   padding-bottom: 20px;

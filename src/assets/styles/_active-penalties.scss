@@ -5,7 +5,7 @@
     tr {
         &:hover {
             td {
-               opacity: 0.7;
+                opacity: 0.7;
             }
         }
 
@@ -13,7 +13,7 @@
             background: transparent;
             border: 0;
             color: $color-white;
-            padding: 15px 50px;
+            padding: 20px 40px;
             font-size: 16px;
             font-weight: 700;
             font-family: $helvetica;
@@ -24,10 +24,20 @@
             border: 0;
             border-bottom: 5px solid $color-body;
             color: $color-white;
-            padding: 15px 50px;
+            padding: 10px 40px;
             font-weight: 600;
             font-size: 14px;
             transition: all 0.4s;
+
+            span {
+                &.number {
+                    font-weight: 500;
+                }
+
+                &.time {
+                    font-weight: 400;
+                }
+            }
 
             &:first-child {
                 border-top-left-radius: 10px;

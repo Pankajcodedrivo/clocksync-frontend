@@ -1,10 +1,12 @@
-@import "./variables";
-@import "./fonts";
-@import "./header";
-@import "./footer";
-@import "./home";
-@import "./table";
-@import "./score-keeper";
+@import './variables';
+@import './fonts';
+@import './header';
+@import './footer';
+@import './home';
+@import './active-penalties';
+@import './score-keeper';
+@import './game-statistics';
+@import './live-stats-tracker';
 
 body,
 html {
@@ -18,9 +20,6 @@ body {
     font-style: normal;
     line-height: 1.6;
     color: $color-white;
-    background: url('../images/background.jpg') no-repeat;
-    background-size: cover;
-    background-position: center;
 }
 
 * {
@@ -71,7 +70,10 @@ h1 {
     font-size: 48px;
     font-weight: 500;
 }
-
+h2 {
+    font-size: 48px;
+    font-weight: 500;
+}
 h3 {
     font-size: 24px;
     font-weight: 500;
@@ -80,6 +82,15 @@ h3 {
 ul {
     padding: 0;
 }
+.mb-50 {
+    margin-bottom: 50px;
+}
+.mt-30 {
+    margin-top: 30px;
+}
+.mb-30 {
+    margin-bottom: 30px;
+}
 
 input.form-control:focus {
     box-shadow: none;
@@ -87,21 +98,19 @@ input.form-control:focus {
 }
 .container.small-container {
     @media only screen and (min-width: 1300px) {
-        max-width: 1100px;
+        max-width: 1140px;
     }
+}
+.wrapper {
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .btn {
     border-radius: 5px;
     padding: 13px 25px;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
+    display: inline-flex;
     align-items: center;
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
     justify-content: center;
     font-weight: 600;
     font-size: 14px;
@@ -109,11 +118,58 @@ input.form-control:focus {
     line-height: 0.8;
     transition: all 0.5s;
     &.btn-primary {
-    background: $color-orange;
-    color: $color-white;
-    &:hover {
-        background: $color-blue;
+        background: $color-orange;
+        color: $color-white;
+        &:hover {
+            background: $color-blue;
+        }
+    }
+    &.btn-secendary {
+        background: $color-green;
+        color: $color-white;
+        &:hover {
+            background: $color-blue;
+        }
     }
 }
+.cmn-box-wrapper {
+    background: $color-3;
+    box-shadow: 0px 2px 20px 0px #0C0F1B;
+    border-radius: 10px;
+    padding: 10px;
+    position: relative;
+    z-index: 1;
+    &.p-36 {
+        padding-top: 36px;
+        padding-bottom: 36px;
+    }
 }
 
+.cmn-box {
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.8) 0%, rgba(15, 23, 42, 0.8) 37.37%, rgba(15, 23, 42, 0.8) 82.23%);
+    border-radius: 20px;
+    padding: 30px 120px;
+    margin-bottom: 30px;
+    &.pt-30 {
+        padding-top: 30px;
+    }
+    h2 {
+        margin-bottom: 30px;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+        &:after {
+            position: absolute;
+            content: '';
+            background: url('../images/color-grow-hdr.png') no-repeat;
+            background-size: 100% 100%;
+            bottom: -50px;
+            left: 0;
+            right: 0;
+            margin: auto;
+            width: 60%;
+            height: 80px;
+            z-index: -1;
+        }
+    }
+}
