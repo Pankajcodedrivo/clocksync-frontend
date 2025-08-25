@@ -8,7 +8,7 @@ export default function LiveStatsTracker({title}: AddProps) {
     return (
         <>  
             <div className="traker-top">
-                <div className="btn btn-secendary"><span><img src={goal} alt="" /></span>Goal</div>
+                <div className="btn btn-secendary active"><span><img src={goal} alt="" /></span>Goal</div>
                 <h6>{title}</h6>
                 <div className="btn btn-primary"><span><img src={penalty} alt="" /></span>Penalty</div>
             </div>

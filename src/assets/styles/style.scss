@@ -222,6 +222,10 @@ input.form-control:focus {
         padding: 0;
         padding-left: 1px;
         z-index: 5;
+        &[aria-expanded="true"]{
+            transform: rotate(180deg);
+            padding-left: 0;
+        }
         @media only screen and (max-width: 767px) {
             top: 20px;
             right: 20px;
