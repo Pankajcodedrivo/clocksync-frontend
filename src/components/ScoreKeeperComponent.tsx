@@ -19,7 +19,7 @@ export default function ScoreKeeperComponent() {
     return (
         <>
             <div className="score-board-otr">
-                <div className="row m-0 justify-content-center">
+                <div className="row m-0 score-keeper justify-content-center">
                     <div className="col-md-4 score-card-innr p-0">
                         <div className="score-card">
                             <div className="score-icon"><img src={iconngo} alt="" /></div>
@@ -74,6 +74,9 @@ export default function ScoreKeeperComponent() {
                                 <button className="play-btn"><img src={playbtn} alt="" /></button>
                             </div>
                         </div>
+                        <div className="text-center d-block d-md-none mt-10">
+                            <button type="button" className="btn btn-primary">Reset Game</button>
+                        </div>
                     </div>
                     <div className="col-md-4 score-card-innr p-0">
                         <div className="score-card">
@@ -94,7 +97,7 @@ export default function ScoreKeeperComponent() {
                     </div>
                 </div>
             </div>
-            <div className="text-center mt-30">
+            <div className="text-center mt-30 d-none d-md-block">
                 <button type="button" className="btn btn-primary">Reset Game</button>
             </div>
         </>

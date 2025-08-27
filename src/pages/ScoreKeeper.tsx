@@ -8,7 +8,7 @@ export default function ScoreKeeper() {
         <div className="wrapper">
             <section className="score-board-sec">
                 <div className="container small-container">
-                    <div className="score-top cmn-box pt-30">
+                    <div className="score-top pd cmn-box pt-30">
                         <div className="text-center hdr">
                             <h1>Score Keeper</h1>
                         </div>
@@ -23,7 +23,7 @@ export default function ScoreKeeper() {
                                     <option value="2">Home</option>
                                     <option value="3">Home</option>
                                 </select>
-                                <input type="text" placeholder="Player name" className="form-control name" />
+                                <input type="text" placeholder="Player No" className="form-control name" />
                                 <select name="" id="" className="form-control mins-select">
                                     <option value="1">Mins.</option>
                                     <option value="2">Mins.</option>
@@ -42,7 +42,7 @@ export default function ScoreKeeper() {
                                     <option value="2">Home</option>
                                     <option value="3">Home</option>
                                 </select>
-                                <input type="text" placeholder="Player name" className="form-control name" />
+                                <input type="text" placeholder="Player No" className="form-control name" />
                                 <div className="time-select">
                                     <select name="" id="" className="form-control mins-select">
                                         <option value="1">Mins.</option>

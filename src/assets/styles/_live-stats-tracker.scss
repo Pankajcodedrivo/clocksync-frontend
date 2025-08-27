@@ -36,6 +36,9 @@
                 min-width: 90px;
                 padding: 7px 10px;
             }
+            &.active {
+                background: $color-blue;
+            }
         }
         h6 {
             margin-bottom: 0;

@@ -8,7 +8,7 @@ export default function LiveStatsTracker() {
                         <LiveStats title="Home" />
                     </div>
                     <div className="col-md-6 traker-innr">
-                        <LiveStats title="AWAY" />
+                        <LiveStats title="Away" />
                     </div>
                 </div>
             </div>
