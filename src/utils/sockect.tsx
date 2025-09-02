@@ -6,35 +6,32 @@ type EventHandlers = {
 };
 
 const useSocket = (
-  isLoggedIn: boolean,
-  userId: string | null,
+  gameId: string | null,
   handlers: EventHandlers = {}
 ) => {
   const [isConnected, setIsConnected] = useState(false);
   const socketRef = useRef<Socket | null>(null);
-  const hasSignedIn = useRef(false);
-  const prevUserId = useRef<string | null>(null);
+  const prevGameId = useRef<string | null>(null);
 
   // Establish and manage socket connection
   useEffect(() => {
-    if (!isLoggedIn || !userId) {
-      console.log("🛑 Not logged in or userId missing, disconnecting socket...");
+    if (!gameId) {
+      console.log("🛑 No gameId provided, disconnecting socket...");
       if (socketRef.current) {
         socketRef.current.disconnect();
         socketRef.current = null;
       }
       setIsConnected(false);
-      hasSignedIn.current = false;
       return;
     }
 
-    // Avoid reconnect if already connected with same user
-    if (prevUserId.current === userId && socketRef.current) {
-      console.log("✅ Socket already connected for this user.");
+    // Avoid reconnect if already connected with same game
+    if (prevGameId.current === gameId && socketRef.current) {
+      console.log("✅ Socket already connected for this game.");
       return;
     }
 
-    prevUserId.current = userId;
+    prevGameId.current = gameId;
     const serverUrl = import.meta.env.VITE_SOCKET_URL;
     console.log("🌍 Connecting to socket server:", serverUrl);
 
@@ -49,20 +46,22 @@ const useSocket = (
     socket.on("connect", () => {
       console.log("✅ Connected:", socket.id);
       setIsConnected(true);
-      socket.emit("sign-in", { user_id: userId });
-      hasSignedIn.current = true;
+
+      // 👉 Join the game room
+      socket.emit("joinRoom", { gameId });
     });
 
     socket.on("disconnect", (reason) => {
       console.log("⚠️ Disconnected:", reason);
       setIsConnected(false);
-      hasSignedIn.current = false;
     });
 
     socket.on("reconnect", (attempt) => {
       console.log(`🔄 Reconnected after ${attempt} attempts`);
       setIsConnected(true);
-      socket.emit("sign-in", { user_id: userId });
+
+      // 👉 Re-join the game room
+      socket.emit("joinRoom", { gameId });
     });
 
     socket.on("error", (error) => {
@@ -71,12 +70,15 @@ const useSocket = (
 
     return () => {
       console.log("🧹 Cleaning up socket connection...");
-      socket.disconnect();
+      if (socketRef.current) {
+        // 👉 Leave game room before disconnect
+        socketRef.current.emit("leaveRoom", { gameId });
+        socketRef.current.disconnect();
+      }
       socketRef.current = null;
       setIsConnected(false);
-      hasSignedIn.current = false;
     };
-  }, [isLoggedIn, userId]);
+  }, [gameId]);
 
   // Bind handlers separately so they don't re-trigger the connection effect
   useEffect(() => {

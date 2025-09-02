@@ -4,73 +4,80 @@ import iconclock from "../assets/images/icon-clock.svg";
 import iconaway from "../assets/images/icon-away.svg";
 import setclock from "../assets/images/clock.svg";
 import playbtn from "../assets/images/play-icon.svg";
-import pausebtn from "../assets/images/pause-icon.svg"; // 👈 add this new SVG
+import pausebtn from "../assets/images/pause-icon.svg";
 import plus from "../assets/images/plus.svg";
 import minus from "../assets/images/minus.svg";
 
-export default function ScoreKeeperComponent() {
+interface Props {
+  gameStatistics: any;
+  gameId: string;
+  socketEmit: (event: string, payload: any) => void;
+}
+
+export default function ScoreKeeperComponent({ gameStatistics, gameId, socketEmit }: Props) {
   // Scores & quarters
-  const [homeScore, setHomeScore] = useState<number>(0);
-  const [awayScore, setAwayScore] = useState<number>(0);
-  const [quarter, setQuarter] = useState<number>(1);
+  const [homeScore, setHomeScore] = useState<number>(gameStatistics?.homeTeam?.score || 0);
+  const [awayScore, setAwayScore] = useState<number>(gameStatistics?.awayTeam?.score || 0);
+  const [quarter, setQuarter] = useState<number>(gameStatistics?.clock?.quarter || 1);
 
-  // Timer
-  const [minutes, setMinutes] = useState<number>(1);
-  const [seconds, setSeconds] = useState<number>(0);
-  const [timeLeft, setTimeLeft] = useState<number | null>(null); // total seconds
-  const [running, setRunning] = useState<boolean>(false);
+  // Clock
+  const [minutes, setMinutes] = useState<number>(gameStatistics?.clock?.minutes || 0);
+  const [seconds, setSeconds] = useState<number>(gameStatistics?.clock?.seconds || 0);
+  const [running, setRunning] = useState(false);
 
-  // Countdown effect
+  // Timer countdown effect
   useEffect(() => {
     let timer: ReturnType<typeof setInterval>;
-    if (running && timeLeft !== null && timeLeft > 0) {
+    if (running) {
       timer = setInterval(() => {
-        setTimeLeft((prev) => (prev !== null ? prev - 1 : 0));
+        setSeconds((prevSec) => {
+          let newSec = prevSec - 1;
+          let newMin = minutes;
+          if (newSec < 0) {
+            if (minutes > 0) {
+              newMin -= 1;
+              newSec = 59;
+              setMinutes(newMin);
+            } else {
+              newSec = 0;
+              setRunning(false);
+            }
+          }
+
+          // Emit updated clock to server
+          socketEmit("updateClock", { gameId, quarter, minutes: newMin, seconds: newSec });
+          return newSec;
+        });
       }, 1000);
-    } else if (timeLeft === 0) {
-      setRunning(false);
     }
     return () => clearInterval(timer);
-  }, [running, timeLeft]);
+  }, [running, minutes, quarter, gameId]);
 
-  // Sync minutes/seconds with timeLeft
-  useEffect(() => {
-    if (timeLeft !== null) {
-      setMinutes(Math.floor(timeLeft / 60));
-      setSeconds(timeLeft % 60);
-    }
-  }, [timeLeft]);
+  // Update scores with socket
+  const handleUpdateScore = (team: "home" | "away", delta: number) => {
+    let newScore = team === "home" ? homeScore + delta : awayScore + delta;
+    if (newScore < 0) newScore = 0;
+
+    if (team === "home") setHomeScore(newScore);
+    else setAwayScore(newScore);
+
+    socketEmit("setScore", { gameId, team, value: newScore });
+  };
 
   // Format mm:ss
-  const formatTime = (total: number) => {
-    const m = String(Math.floor(total / 60)).padStart(2, "0");
-    const s = String(total % 60).padStart(2, "0");
-    return `${m}:${s}`;
-  };
+  const formatTime = (m: number, s: number) => `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
 
-  // Set clock
-  const handleSetClock = () => {
-    const total = minutes * 60 + seconds;
-    setTimeLeft(total);
-    setRunning(false);
-  };
-
-  // Play / Pause toggle
-  const handleToggleTimer = () => {
-    if (timeLeft !== null && timeLeft > 0) {
-      setRunning((prev) => !prev);
-    }
-  };
-
-  // Reset
+  // Clock controls
+  const handleToggleTimer = () => setRunning((prev) => !prev);
+  const handleSetClock = () => socketEmit("updateClock", { gameId, quarter, minutes, seconds });
   const handleReset = () => {
     setHomeScore(0);
     setAwayScore(0);
     setQuarter(1);
-    setMinutes(1);
+    setMinutes(0);
     setSeconds(0);
-    setTimeLeft(null);
     setRunning(false);
+    socketEmit("resetGame", { gameId });
   };
 
   return (
@@ -84,13 +91,16 @@ export default function ScoreKeeperComponent() {
               <h3>Home</h3>
               <div className="score-content">
                 <div className="quantity">
-                  <button className="qty-btn" onClick={() => setHomeScore(homeScore > 0 ? homeScore - 1 : 0)}><img src={minus} alt="-" /></button>
-                  <input type="number" value={homeScore} min={0} onChange={(e) => setHomeScore(Number(e.target.value))} />
-                  <button className="qty-btn" onClick={() => setHomeScore(homeScore + 1)}><img src={plus} alt="+" /></button>
+                  <button className="qty-btn" onClick={() => handleUpdateScore("home", -1)}><img src={minus} alt="-" /></button>
+                  <input type="number" value={homeScore} min={0} onChange={(e) => handleUpdateScore("home", Number(e.target.value) - homeScore)} />
+                  <button className="qty-btn" onClick={() => handleUpdateScore("home", 1)}><img src={plus} alt="+" /></button>
                 </div>
                 <ul>
-                    <li>5’ Darrel Bins</li>
-                    <li>7’ Darrel Bins</li>
+                  {gameStatistics?.goals
+                    ?.filter((g: any) => g.team.toLowerCase() === "home")
+                    .map((g: any, i: number) => (
+                      <li key={i}>{g.minute}’ #{g.playerNo}</li>
+                    ))}
                 </ul>
               </div>
             </div>
@@ -100,7 +110,7 @@ export default function ScoreKeeperComponent() {
           <div className="col-md-4 score-card-innr p-0">
             <div className="score-card">
               <div className="score-icon"><img src={iconclock} alt="clock icon" /></div>
-              <h3>Quarters</h3>
+              <h3>Quarter {quarter}</h3>
               <div className="score-content pb-0">
                 <div className="quantity">
                   <button className="qty-btn" onClick={() => setQuarter(quarter > 1 ? quarter - 1 : 1)}><img src={minus} alt="-" /></button>
@@ -108,22 +118,17 @@ export default function ScoreKeeperComponent() {
                   <button className="qty-btn" onClick={() => setQuarter(quarter + 1)}><img src={plus} alt="+" /></button>
                 </div>
                 <div className="timer">
-                  {timeLeft !== null ? <span>{formatTime(timeLeft)}</span> : <span>00:00</span>}
+                  <span>{formatTime(minutes, seconds)}</span>
                 </div>
               </div>
 
-              {/* Timer controls */}
               <div className="set-clock">
                 <div className="time-select">
                   <select value={minutes} onChange={(e) => setMinutes(Number(e.target.value))} className="form-control">
-                    {Array.from({ length: 60 }, (_, i) => i + 1).map((m) => (
-                      <option key={m} value={m}>{m} Min</option>
-                    ))}
+                    {Array.from({ length: 60 }, (_, i) => i).map((m) => <option key={m} value={m}>{m} Min</option>)}
                   </select>
                   <select value={seconds} onChange={(e) => setSeconds(Number(e.target.value))} className="form-control">
-                    {Array.from({ length: 60 }, (_, i) => i).map((s) => (
-                      <option key={s} value={s}>{s} Sec</option>
-                    ))}
+                    {Array.from({ length: 60 }, (_, i) => i).map((s) => <option key={s} value={s}>{s} Sec</option>)}
                   </select>
                 </div>
                 <div className="clock" onClick={handleSetClock} style={{ cursor: "pointer" }}>
@@ -134,10 +139,6 @@ export default function ScoreKeeperComponent() {
                 </button>
               </div>
             </div>
-
-            <div className="text-center d-block d-md-none mt-10">
-              <button type="button" className="btn btn-primary" onClick={handleReset}>Reset Game</button>
-            </div>
           </div>
 
           {/* Away */}
@@ -147,13 +148,16 @@ export default function ScoreKeeperComponent() {
               <h3>Away</h3>
               <div className="score-content">
                 <div className="quantity">
-                  <button className="qty-btn" onClick={() => setAwayScore(awayScore > 0 ? awayScore - 1 : 0)}><img src={minus} alt="-" /></button>
-                  <input type="number" value={awayScore} min={0} onChange={(e) => setAwayScore(Number(e.target.value))} />
-                  <button className="qty-btn" onClick={() => setAwayScore(awayScore + 1)}><img src={plus} alt="+" /></button>
+                  <button className="qty-btn" onClick={() => handleUpdateScore("away", -1)}><img src={minus} alt="-" /></button>
+                  <input type="number" value={awayScore} min={0} onChange={(e) => handleUpdateScore("away", Number(e.target.value) - awayScore)} />
+                  <button className="qty-btn" onClick={() => handleUpdateScore("away", 1)}><img src={plus} alt="+" /></button>
                 </div>
                 <ul>
-                    <li>5’ Darrel Bins</li>
-                    <li>7’ Darrel Bins</li>
+                  {gameStatistics?.goals
+                    ?.filter((g: any) => g.team.toLowerCase() === "away")
+                    .map((g: any, i: number) => (
+                      <li key={i}>{g.minute}’ #{g.playerNo}</li>
+                    ))}
                 </ul>
               </div>
             </div>
@@ -161,7 +165,7 @@ export default function ScoreKeeperComponent() {
         </div>
       </div>
 
-      {/* Reset Desktop */}
+      {/* Reset */}
       <div className="text-center mt-30 d-none d-md-block">
         <button type="button" className="btn btn-primary" onClick={handleReset}>Reset Game</button>
       </div>
