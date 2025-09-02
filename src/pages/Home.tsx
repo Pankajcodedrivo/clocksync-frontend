@@ -1,14 +1,56 @@
-import add1 from "../assets/images/add-1.jpg"
-import add3 from "../assets/images/add-3.jpg"
-import add4 from "../assets/images/add-4.jpg"
-import Add from "../components/Add"
-import ActivePenalties from "../components/ActivePenalties"
-import GameStatistics from "../components/GameStatistics"
-import LiveStatsTracker from "../components/LiveStatsTracker"
+import { useParams, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+
+import add1 from "../assets/images/add-1.jpg";
+import add3 from "../assets/images/add-3.jpg";
+import add4 from "../assets/images/add-4.jpg";
+import Add from "../components/Add";
+import ActivePenalties from "../components/ActivePenalties";
+import GameStatistics from "../components/GameStatistics";
+import LiveStatsTracker from "../components/LiveStatsTracker";
 import ScoreBoardComponent from "../components/ScoreBoardComponent";
+import { getField } from "../service/api.service";
+
 export default function Home() {
+  const { fieldslug } = useParams();
+  const navigate = useNavigate();
+  const [_, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+   useEffect(() => {
+    if (fieldslug) {
+      const fetchData = async () => {
+        try {
+          setLoading(true);
+          const res = await getField(fieldslug);
+          if (!res || res.status === 404) {
+            navigate("/404");
+          } else {
+            setData(res);
+          }
+        } catch (err) {
+          console.error("Error fetching field:", err);
+          navigate("/404");
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchData();
+    }
+  }, [fieldslug, navigate]);
+
+  if (loading) {
     return (
-        <div className="wrapper">
+      <div className="loading-screen text-center">
+      
+        <p>Loading field data...</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="wrapper">
             <div className="add-sec">
                 <div className="container small-container">
                     <div className="add-otr">
@@ -56,5 +98,5 @@ export default function Home() {
                 </div>
             </section>
         </div>
-    )
+  );
 }

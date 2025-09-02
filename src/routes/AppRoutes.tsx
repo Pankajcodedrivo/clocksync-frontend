@@ -5,7 +5,7 @@ import ScoreKeeper from "../pages/ScoreKeeper"
 export default function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/:fieldslug" element={<Home />} />
       <Route path="/score-keeper" element={<ScoreKeeper />} />
     </Routes>
   );
