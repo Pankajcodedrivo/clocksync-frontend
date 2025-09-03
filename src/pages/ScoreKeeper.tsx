@@ -66,7 +66,7 @@ export default function ScoreKeeper() {
   }, [accessToken, gameId]);
 
   // Setup socket
-  const { emit, isConnected } = useSocket(gameId, {
+  const { emit } = useSocket(gameId, {
     gameUpdated: (updatedStats: any) => {
       console.log("📡 Received updated stats:", updatedStats);
       setGameStatistics(updatedStats);
@@ -134,7 +134,7 @@ export default function ScoreKeeper() {
             <div className="text-center hdr">
               <h1>Score Keeper</h1>
             </div>
-            <ScoreKeeperComponent />
+            <ScoreKeeperComponent gameStatistics={gameStatistics} socketEmit={emit} />
           </div>
 
           {/* Add Goal */}

@@ -10,15 +10,15 @@ import minus from "../assets/images/minus.svg";
 
 interface Props {
   gameStatistics: any;
-  gameId: string;
   socketEmit: (event: string, payload: any) => void;
 }
 
-export default function ScoreKeeperComponent({ gameStatistics, gameId, socketEmit }: Props) {
+export default function ScoreKeeperComponent({ gameStatistics, socketEmit }: Props) {
   // Scores & quarters
+  const gameId = gameStatistics?.gameId || null;
   const [homeScore, setHomeScore] = useState<number>(gameStatistics?.homeTeam?.score || 0);
   const [awayScore, setAwayScore] = useState<number>(gameStatistics?.awayTeam?.score || 0);
-  const [quarter, setQuarter] = useState<number>(gameStatistics?.clock?.quarter || 1);
+  const [quarter, setQuarter] = useState<number>(gameStatistics?.clock?.quarter || 0);
 
   // Clock
   const [minutes, setMinutes] = useState<number>(gameStatistics?.clock?.minutes || 0);
