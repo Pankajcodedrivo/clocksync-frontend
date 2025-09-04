@@ -1,8 +1,9 @@
 interface ActivePenaltiesProps {
   gameStatistics: any;
+  game:any;
 }
 
-export default function ActivePenalties({ gameStatistics }: ActivePenaltiesProps) {
+export default function ActivePenalties({ gameStatistics,game }: ActivePenaltiesProps) {
   const penalties = gameStatistics?.penalties || [];
 
   return (
@@ -20,7 +21,7 @@ export default function ActivePenalties({ gameStatistics }: ActivePenaltiesProps
           {penalties.length > 0 ? (
             penalties.map((penalty: any, index: number) => (
               <tr key={index}>
-                <td>{ penalty?.team}</td>
+                <td>{ (penalty?.team==='home')?game?.homeTeamName : game?.awayTeamName}</td>
                 <td>{ penalty?.type}</td>
                 <td><span className="number">{penalty?.playerNo}</span></td>
                 <td>

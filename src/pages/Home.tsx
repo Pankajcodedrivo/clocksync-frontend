@@ -10,11 +10,13 @@ import GameStatistics from "../components/GameStatistics";
 import LiveStatsTracker from "../components/LiveStatsTracker";
 import ScoreBoardComponent from "../components/ScoreBoardComponent";
 import { getField } from "../service/api.service";
+import useSocket from "../utils/sockect";
 
 export default function Home() {
   const { fieldslug } = useParams();
   const navigate = useNavigate();
-  const [_, setData] = useState(null);
+  const [game, setGame] = useState<any>(null);
+  const [gameStatistics, setGameStatistics] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
    useEffect(() => {
@@ -26,7 +28,8 @@ export default function Home() {
           if (!res || res.status === 404) {
             navigate("/404");
           } else {
-            setData(res);
+            setGame(res?.games);
+            setGameStatistics(res?.gameStatistics);
           }
         } catch (err) {
           console.error("Error fetching field:", err);
@@ -39,6 +42,35 @@ export default function Home() {
       fetchData();
     }
   }, [fieldslug, navigate]);
+  useSocket(game?._id, {
+    clockUpdated: (clock: any) => {
+      setGameStatistics((prev: any) => ({ ...prev, clock }));
+    },
+    setQuater: (stats: any) => {
+      setGameStatistics((prev: any) => ({
+        ...prev,
+        clock: {
+          ...prev.clock,        // keep minutes, seconds, running
+          quarter: stats.clock.quarter // update only quarter
+        }
+      }));
+    },
+    scoreUpdated: (stats: any) => {
+      setGameStatistics(stats);
+    },
+    statUpdated: (stats: any) => {
+      setGameStatistics(stats);
+    },
+    goalAdded: (stats: any) => {
+      setGameStatistics(stats);
+    },
+    penaltyAdded: (stats: any) => {
+      setGameStatistics(stats);
+    },
+    gameReset: (stats: any) => {
+      setGameStatistics(stats);
+    },
+  });
 
   if (loading) {
     return (
@@ -48,6 +80,7 @@ export default function Home() {
       </div>
     );
   }
+  
 
   return (
     <div className="wrapper">
@@ -64,7 +97,7 @@ export default function Home() {
                         <div className="text-center hdr">
                             <h1>Score Board</h1>
                         </div>
-                        <ScoreBoardComponent />
+                        <ScoreBoardComponent gameStatistics={gameStatistics} game={game} />
                     </div>
                     <div className="add-sec text-center p-0 mb-30 d-block d-xl-none">
                         <div className="add-otr">
@@ -73,11 +106,11 @@ export default function Home() {
                     </div>
                     <div className="cmn-box">
                         <h2>Active Penalties</h2>
-                        <ActivePenalties />
+                        <ActivePenalties gameStatistics={gameStatistics} game={game} />
                     </div>
                     <div className="cmn-box">
                         <h2>Game Statistics</h2>
-                        <GameStatistics />
+                        <GameStatistics  gameStatistics={gameStatistics}  game={game} />
                     </div>
 
                     <div className="add-sec text-center p-0 mb-30 d-block d-xl-none">
@@ -87,7 +120,7 @@ export default function Home() {
                     </div>
                     <div className="cmn-box mb-0">
                         <h2>Live Stats Tracker</h2>
-                        <LiveStatsTracker />
+                        <LiveStatsTracker gameStatistics={gameStatistics} game={game} />
                     </div>
                 </div>
                 <div className="left d-none d-xl-block">

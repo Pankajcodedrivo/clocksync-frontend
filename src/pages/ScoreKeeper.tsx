@@ -27,8 +27,8 @@ export default function ScoreKeeper() {
 
   // URL param
   const urlCode = searchParams.get("code");
-  const accessToken = localStorage.getItem("access_token") ?? "";
-  const gameId = localStorage.getItem("game_id") ?? "";
+  const accessToken = sessionStorage.getItem("access_token") ?? "";
+  const gameId = sessionStorage.getItem("game_id") ?? "";
 
   // Verify scorekeeper code
   useEffect(() => {
@@ -36,9 +36,9 @@ export default function ScoreKeeper() {
       if (urlCode && !accessToken) {
         try {
           const res = await verifyScoreKeeperCode(urlCode);
-          localStorage.setItem("access_token", res?.tokens?.access);
-          localStorage.setItem("refresh_token", res?.tokens?.refresh);
-          localStorage.setItem("game_id", res?.gameId);
+          sessionStorage.setItem("access_token", res?.tokens?.access);
+          sessionStorage.setItem("refresh_token", res?.tokens?.refresh);
+          sessionStorage.setItem("game_id", res?.gameId);
         } catch (err) {
           console.error("Failed to verify scorekeeper code:", err);
         }
@@ -54,7 +54,7 @@ export default function ScoreKeeper() {
       try {
         setLoading(true);
         const gameData = await getGame(gameId, accessToken);
-        setGame(gameData);
+        setGame(gameData?.game);
         if (gameData?.gameStatistics) setGameStatistics(gameData.gameStatistics);
       } catch (err) {
         console.error("Error fetching game:", err);
@@ -67,10 +67,9 @@ export default function ScoreKeeper() {
 
   // Setup socket
   const { emit } = useSocket(gameId, {
-    gameUpdated: (updatedStats: any) => {
-      console.log("📡 Received updated stats:", updatedStats);
-      setGameStatistics(updatedStats);
-    }
+    clockUpdated: (clock: any) => {
+      setGameStatistics((prev: any) => ({ ...prev, clock }));
+    },
   });
 
   // Dynamic Add Goal
@@ -116,11 +115,11 @@ export default function ScoreKeeper() {
         return (
         <div className="wrapper no-data">
             <section className="score-board-sec">
-            <div className="container small-container">
-                <div className="score-top pd cmn-box pt-30">
-                <h1>No game data found.</h1>
-                </div>
-            </div>
+              <div className="container small-container">
+                  <div className="score-top pd cmn-box pt-30">
+                  <h1>No game data found.</h1>
+                  </div>
+              </div>
             </section>
         </div>
         );
@@ -134,7 +133,7 @@ export default function ScoreKeeper() {
             <div className="text-center hdr">
               <h1>Score Keeper</h1>
             </div>
-            <ScoreKeeperComponent gameStatistics={gameStatistics} socketEmit={emit} />
+            <ScoreKeeperComponent gameStatistics={gameStatistics} setGameStatistics={setGameStatistics} socketEmit={emit} game={game} />
           </div>
 
           {/* Add Goal */}
@@ -143,8 +142,8 @@ export default function ScoreKeeper() {
             <div className="information-form-wrapper text-center">
               <div className="information-form add-scorer">
                 <select value={goalTeam} onChange={(e) => setGoalTeam(e.target.value)} className="form-control ngo-select">
-                  <option value="home">Home</option>
-                  <option value="away">Away</option>
+                  <option value="home">{game?.homeTeamName}</option>
+                  <option value="away">{game?.awayTeamName}</option>
                 </select>
                 <input type="number" placeholder="Player No" value={goalPlayer} onChange={(e) => setGoalPlayer(e.target.value)} className="form-control name" />
                 <select value={goalMinute} onChange={(e) => setGoalMinute(e.target.value)} className="form-control mins-select">
@@ -164,10 +163,14 @@ export default function ScoreKeeper() {
             <div className="information-form-wrapper text-center">
               <div className="information-form add-scorer">
                 <select value={penaltyTeam} onChange={(e) => setPenaltyTeam(e.target.value)} className="form-control ngo-select">
-                  <option value="home">Home</option>
-                  <option value="away">Away</option>
+                  <option value="home">{game?.homeTeamName}</option>
+                  <option value="away">{game?.awayTeamName}</option>
                 </select>
                 <input type="number" placeholder="Player No" value={penaltyPlayer} onChange={(e) => setPenaltyPlayer(e.target.value)} className="form-control name" />
+                <select value={penaltyType} onChange={(e) => setPenaltyType(e.target.value)} className="form-control mins-select">
+                  <option value="illegal">Illegal</option>
+                  <option value="legal">Legal</option>
+                </select>
                 <select value={penaltyMinutes} onChange={(e) => setPenaltyMinutes(e.target.value)} className="form-control mins-select">
                   <option value="">Mins.</option>
                   {Array.from({ length: 90 }, (_, i) => (
@@ -180,10 +183,7 @@ export default function ScoreKeeper() {
                     <option key={i} value={i}>{i}</option>
                   ))}
                 </select>
-                <select value={penaltyType} onChange={(e) => setPenaltyType(e.target.value)} className="form-control mins-select">
-                  <option value="illegal">Illegal</option>
-                  <option value="legal">Legal</option>
-                </select>
+                
                 <button type="submit" onClick={handleAddPenalty} className="btn btn-primary">Add Penalty</button>
               </div>
             </div>
@@ -192,7 +192,7 @@ export default function ScoreKeeper() {
           {/* Active Penalties */}
           <div className="cmn-box">
             <h2>Active Penalties</h2>
-            <ActivePenalties gameStatistics={gameStatistics} />
+            <ActivePenalties gameStatistics={gameStatistics} game={game} />
           </div>
 
           {/* Game Statistics */}
@@ -202,7 +202,7 @@ export default function ScoreKeeper() {
               <img src={AccArrow} alt="" />
             </button>
             <div className="collapse" id="game-statistics">
-              <GameStatisticsScoreKeeper gameStatistics={gameStatistics} emit={emit} />
+              <GameStatisticsScoreKeeper gameStatistics={gameStatistics} setGameStatistics={setGameStatistics} emit={emit} game={game} />
             </div>
           </div>
 
@@ -213,7 +213,7 @@ export default function ScoreKeeper() {
               <img src={AccArrow} alt="" />
             </button>
             <div className="collapse" id="live-stats-tracker">
-              <LiveStatsTracker />
+              <LiveStatsTracker gameStatistics={gameStatistics} game={game} />
             </div>
           </div>
         </div>

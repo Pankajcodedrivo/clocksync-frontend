@@ -4,8 +4,8 @@ import { showErrorToast } from "../utils/toast/toast";
 axios.interceptors.request.use(async (config) => {
   config.baseURL = import.meta.env.VITE_API_BASE_URL;
 
-  // Get the access token and refresh token from localStorage
-  const token = localStorage.getItem("access_token") ?? "";
+  // Get the access token and refresh token from sessionStorage
+  const token = sessionStorage.getItem("access_token") ?? "";
 
   // If access token is available, add it to the request header
   if (token) {
@@ -31,7 +31,7 @@ axios.interceptors.response.use(
     const isUnauthorized = error.response?.status === 401;
 
     if (tokenExpired && isUnauthorized && retryCount < MAX_RETRIES) {
-      const refreshToken = localStorage.getItem("refresh_token");
+      const refreshToken = sessionStorage.getItem("refresh_token");
 
       if (refreshToken) {
         try {
@@ -41,8 +41,8 @@ axios.interceptors.response.use(
 
           const { access, refresh } = refreshResponse.data.tokens || {};
           if (access && refresh) {
-            localStorage.setItem("access_token", access);
-            localStorage.setItem("refresh_token", refresh);
+            sessionStorage.setItem("access_token", access);
+            sessionStorage.setItem("refresh_token", refresh);
 
             error.config.headers["Authorization"] = `Bearer ${access}`;
             retryCount++;
