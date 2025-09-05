@@ -27,8 +27,8 @@ export default function ScoreKeeper() {
 
   // URL param
   const urlCode = searchParams.get("code");
-  const accessToken = sessionStorage.getItem("access_token") ?? "";
-  const gameId = sessionStorage.getItem("game_id") ?? "";
+  const [accessToken, setAccessToken] = useState(sessionStorage.getItem("access_token") ?? "");
+  const [gameId, setGameId] = useState(sessionStorage.getItem("game_id") ?? "");
 
   // Verify scorekeeper code
   useEffect(() => {
@@ -39,6 +39,8 @@ export default function ScoreKeeper() {
           sessionStorage.setItem("access_token", res?.tokens?.access);
           sessionStorage.setItem("refresh_token", res?.tokens?.refresh);
           sessionStorage.setItem("game_id", res?.gameId);
+          setAccessToken(res?.tokens?.access);
+          setGameId(res?.gameId);
         } catch (err) {
           console.error("Failed to verify scorekeeper code:", err);
         }
@@ -69,6 +71,9 @@ export default function ScoreKeeper() {
   const { emit } = useSocket(gameId, {
     clockUpdated: (clock: any) => {
       setGameStatistics((prev: any) => ({ ...prev, clock }));
+    },
+    gameReset: (stats: any) => {
+      setGameStatistics(stats);
     },
   });
 
@@ -110,7 +115,7 @@ export default function ScoreKeeper() {
     }));
   };
 
-  if (loading) return <p className="text-center">Loading game data...</p>;
+  
   if (!game) {
         return (
         <div className="wrapper no-data">

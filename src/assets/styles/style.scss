@@ -123,7 +123,18 @@ input.form-control:focus {
     box-shadow: none;
     border-color: $color-blue;
 }
-
+.mainClass {
+    height: 100vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;      /* full window height */
+}
+.wrapper.no-data {
+  display: flex;
+  justify-content: center;
+  align-items: center;      /* avoid cutting on small screens */
+}
 .container.small-container {
     @media only screen and (min-width: 1200px) {
         max-width:960px;

@@ -72,14 +72,7 @@ export default function Home() {
     },
   });
 
-  if (loading) {
-    return (
-      <div className="loading-screen text-center">
-      
-        <p>Loading field data...</p>
-      </div>
-    );
-  }
+ 
   
 
   return (
