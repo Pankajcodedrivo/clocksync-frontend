@@ -7,7 +7,7 @@ function App() {
   // const [count, setCount] = useState(0)
 
   return (
-    <div className="wrapper" style={{backgroundImage: `url(${bgImage})`}}>
+    <div className="wrapper mainClass" style={{backgroundImage: `url(${bgImage})`}}>
     <Header />
     <AppRoutes />
     <Footer />
