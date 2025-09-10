@@ -1,29 +1,33 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-
-import add1 from "../assets/images/add-1.jpg";
-import add3 from "../assets/images/add-3.jpg";
-import add4 from "../assets/images/add-4.jpg";
-import Add from "../components/Add";
 import ActivePenalties from "../components/ActivePenalties";
 import GameStatistics from "../components/GameStatistics";
 import LiveStatsTracker from "../components/LiveStatsTracker";
 import ScoreBoardComponent from "../components/ScoreBoardComponent";
 import { getField } from "../service/api.service";
 import useSocket from "../utils/sockect";
+import Ads from "../components/Ads";
+interface Settings {
+  desktop?: any
+  mobile?: any
+  googleAdClient?: string
+  sitelogo?: string
+  copyright?: string
+}
+interface HomeProps {
+  settings?: Settings | null; // allow null or undefined
+}
 
-export default function Home() {
+export default function Home({ settings }: HomeProps) {
   const { fieldslug } = useParams();
   const navigate = useNavigate();
   const [game, setGame] = useState<any>(null);
   const [gameStatistics, setGameStatistics] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
 
    useEffect(() => {
     if (fieldslug) {
       const fetchData = async () => {
         try {
-          setLoading(true);
           const res = await getField(fieldslug);
           if (!res || res.status === 404) {
             navigate("/404");
@@ -35,7 +39,6 @@ export default function Home() {
           console.error("Error fetching field:", err);
           navigate("/404");
         } finally {
-          setLoading(false);
         }
       };
 
@@ -79,8 +82,14 @@ export default function Home() {
     <div className="wrapper">
             <div className="add-sec">
                 <div className="container small-container">
-                    <div className="add-otr">
-                        <Add img={add1} />
+                    <div className="add-otr d-block d-xl-none">
+                      
+                      <Ads {...settings?.mobile?.top} clientKey={settings?.googleAdClient} />
+                    </div>
+
+                    {/* Desktop Top Ad */}
+                    <div className="add-otr d-none d-xl-block">
+                      <Ads {...settings?.desktop?.top} clientKey={settings?.googleAdClient} />
                     </div>
                 </div>
             </div>
@@ -93,8 +102,9 @@ export default function Home() {
                         <ScoreBoardComponent gameStatistics={gameStatistics} game={game} />
                     </div>
                     <div className="add-sec text-center p-0 mb-30 d-block d-xl-none">
+                        {/* Mobile Top Ad */}
                         <div className="add-otr">
-                            <Add img={add1} />
+                          <Ads {...settings?.mobile?.middle} clientKey={settings?.googleAdClient} />
                         </div>
                     </div>
                     <div className="cmn-box">
@@ -108,7 +118,7 @@ export default function Home() {
 
                     <div className="add-sec text-center p-0 mb-30 d-block d-xl-none">
                         <div className="add-otr">
-                            <Add img={add1} />
+                            <Ads {...settings?.mobile?.bottom} clientKey={settings?.googleAdClient}/>
                         </div>
                     </div>
                     <div className="cmn-box mb-0">
@@ -117,10 +127,10 @@ export default function Home() {
                     </div>
                 </div>
                 <div className="left d-none d-xl-block">
-                    <Add img={add3} />
+                     <Ads {...settings?.desktop?.left} clientKey={settings?.googleAdClient}/>
                 </div>
                 <div className="right d-none d-xl-block">
-                    <Add img={add4} />
+                    <Ads {...settings?.desktop?.right} clientKey={settings?.googleAdClient}/>
                 </div>
             </section>
         </div>

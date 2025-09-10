@@ -14,3 +14,7 @@ export const verifyScoreKeeperCode = catchAsync(async (code: string) => {
   const response = await httpsCall.post("/scorekeeper/verify", { code });
   return response; // { access, refresh }
 });
+export const getSettings = catchAsync(async () => {
+  const response = await httpsCall.get("/settings/get");
+  return response; // { access, refresh }
+});
