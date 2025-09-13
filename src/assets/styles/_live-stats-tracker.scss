@@ -28,6 +28,9 @@
                 min-width: 130px;
                 padding: 8px 15px;
             }
+            @media only screen and (max-width: 991px) {
+                min-width: 120px;
+            }
             @media only screen and (max-width: 575px) {
                 min-width: 100px;
                 padding: 8px 10px;
