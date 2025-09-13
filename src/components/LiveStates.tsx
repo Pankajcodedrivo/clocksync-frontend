@@ -92,7 +92,7 @@ export default function LiveStatsTracker({
               <div className="traker-icon orange">
                 <img src={penalty} alt="penalty" />
               </div>
-              <div className="traker-content">
+              <div className="traker-content text-capitalize">
                 <h5>
                   {p.type} - #{p.playerNo}
                 </h5>

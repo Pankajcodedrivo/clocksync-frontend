@@ -33,7 +33,7 @@ export default function Home({ settings }: HomeProps) {
           setLoading(true);
           const res = await getField(fieldslug);
           if (!res || res.status === 404) {
-            navigate("/404");
+            navigate("/");
           } else {
             setGame(res?.games);
             setGameStatistics(res?.gameStatistics);
@@ -42,7 +42,7 @@ export default function Home({ settings }: HomeProps) {
         } catch (err) {
           setLoading(false);
           console.error("Error fetching field:", err);
-          navigate("/404");
+          navigate("/");
         } finally {
           setLoading(false);
         }
@@ -68,6 +68,7 @@ export default function Home({ settings }: HomeProps) {
       setGameStatistics(stats);
     },
     removePenalty: (stats: any) => {
+      console.log(stats);
       setGameStatistics(stats);
     },
     statUpdated: (stats: any) => {

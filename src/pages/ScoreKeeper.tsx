@@ -24,7 +24,7 @@ export default function ScoreKeeper() {
   const [penaltyPlayer, setPenaltyPlayer] = useState("");
   const [penaltyMinutes, setPenaltyMinutes] = useState("");
   const [penaltySeconds, setPenaltySeconds] = useState("");
-  const [penaltyType, setPenaltyType] = useState("legal");
+  const [penaltyType, setPenaltyType] = useState("releasable");
   const [loading, setLoading] = useState(false);
   // URL param
   const urlCode = searchParams.get("code");
@@ -80,6 +80,12 @@ export default function ScoreKeeper() {
     gameReset: (stats: any) => {
       setGameStatistics(stats);
     },
+    penaltyRemoved: (stats: any) => {
+      setGameStatistics(stats);
+    },
+    penaltyAdded: (stats: any) => {
+      setGameStatistics(stats);
+    },
   });
 
   // Dynamic Add Goal
@@ -101,7 +107,8 @@ export default function ScoreKeeper() {
       ...prev,
       goals: [...(prev?.goals || []), payload],
     }));
-
+    setGoalPlayer("");
+    setGoalMinute("");
     // ✅ unlock after short delay (or after socket ack if you add it)
     setTimeout(() => setSubmittingGoal(false), 1000);
   };
@@ -124,11 +131,9 @@ export default function ScoreKeeper() {
     };
 
     emit("addPenalty", payload);
-    setGameStatistics((prev: any) => ({
-      ...prev,
-      penalties: [...(prev?.penalties || []), payload],
-    }));
-
+    setPenaltyPlayer("");
+    setPenaltyMinutes("");
+    setPenaltySeconds("");
     setTimeout(() => setSubmittingPenalty(false), 1000);
   };
 
@@ -224,7 +229,7 @@ export default function ScoreKeeper() {
           {/* Active Penalties */}
           <div className="cmn-box">
             <h2>Active Penalties</h2>
-            <ActivePenalties gameStatistics={gameStatistics} game={game} setGameStatistics={setGameStatistics} socketEmit={emit}/>
+            <ActivePenalties gameStatistics={gameStatistics} game={game}  socketEmit={emit}/>
           </div>
 
           {/* Game Statistics */}

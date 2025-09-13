@@ -1,27 +1,18 @@
 interface ActivePenaltiesProps {
   gameStatistics: any;
   game: any;
-  socketEmit: (event: string, payload: any) => void;
-  setGameStatistics: React.Dispatch<React.SetStateAction<any>>;
+  socketEmit?: (event: string, payload: any) => void;
 }
 
 export default function ActivePenalties({
   gameStatistics,
   game,
-  socketEmit,
-  setGameStatistics,
+  socketEmit
 }: ActivePenaltiesProps) {
   const penalties = gameStatistics?.penalties ?? [];
-
   const handleRemovePenalty = (penaltyId: string) => {
-    // Remove from local state
-    setGameStatistics((prev: any) => ({
-      ...prev,
-      penalties: prev.penalties.filter((p: any) => p._id !== penaltyId),
-    }));
-
     // Notify server
-    socketEmit("removePenalty", { gameId: game?.id, penaltyId });
+    socketEmit?.("removePenalty", { gameId: game?._id, penaltyId });
   };
 
   if (penalties.length === 0) {
@@ -49,7 +40,7 @@ export default function ActivePenalties({
             <th>Type</th>
             <th>Player No</th>
             <th>Time</th>
-            <th />
+             {socketEmit && <th>Action</th>}
           </tr>
         </thead>
         <tbody>
@@ -60,7 +51,7 @@ export default function ActivePenalties({
             return (
               <tr key={penalty?._id ?? index}>
                 <td>{teamName}</td>
-                <td>{penalty.type}</td>
+                <td className="text-capitalize">{penalty.type}</td>
                 <td>
                   <span className="number">{penalty.playerNo}</span>
                 </td>
@@ -70,16 +61,17 @@ export default function ActivePenalties({
                     {String(penalty.seconds).padStart(2, "0")}
                   </span>
                 </td>
-                <td>
-                  {penalty?._id && (
-                    <button
-                      className="btn btn-sm btn-danger"
-                      onClick={() => handleRemovePenalty(penalty?._id)}
-                    >
-                      Remove
-                    </button>
-                  )}
-                </td>
+                {socketEmit && (
+                  <td>
+                    {penalty?._id && (
+                      <a href="javacript:void(0)"
+                        onClick={() => handleRemovePenalty(penalty._id)}
+                      >
+                        Remove
+                      </a>
+                    )}
+                  </td>
+                )}
               </tr>
             );
           })}
