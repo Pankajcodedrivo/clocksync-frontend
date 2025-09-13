@@ -23,6 +23,8 @@ export default function ScoreKeeperComponent({ gameStatistics,setGameStatistics,
   const [minutes, setMinutes] = useState<number>(gameStatistics?.clock?.minutes || 0);
   const [seconds, setSeconds] = useState<number>(gameStatistics?.clock?.seconds || 0);
   const [running, setRunning] = useState<boolean>(gameStatistics?.clock?.running || false);
+  const [tempMinutes, setTempMinutes] = useState<number>(minutes);
+  const [tempSeconds, setTempSeconds] = useState<number>(seconds);
 
   // Listen for updates from parent (which gets them from socket)
   useEffect(() => {
@@ -83,7 +85,11 @@ export default function ScoreKeeperComponent({ gameStatistics,setGameStatistics,
   };
 
   const handleSetClock = () => {
-    socketEmit("setClock", { gameId, minutes, seconds });
+    setMinutes(tempMinutes);
+    setSeconds(tempSeconds);
+    socketEmit("setClock", { gameId, minutes: tempMinutes, seconds: tempSeconds });
+    setTempMinutes(0);
+    setTempSeconds(0);
   };
 
   const handleReset = () => {
@@ -133,10 +139,10 @@ export default function ScoreKeeperComponent({ gameStatistics,setGameStatistics,
 
             <div className="set-clock">
               <div className="time-select">
-                <select  onChange={(e) => setMinutes(Number(e.target.value))} className="form-control">
+                <select value={tempMinutes} onChange={(e) => setTempMinutes(Number(e.target.value))} className="form-control">
                   {Array.from({ length: 60 }, (_, i) => <option key={i} value={i}>{i} Min</option>)}
                 </select>
-                <select  onChange={(e) => setSeconds(Number(e.target.value))} className="form-control">
+                <select value={tempSeconds} onChange={(e) => setTempSeconds(Number(e.target.value))} className="form-control">
                   {Array.from({ length: 60 }, (_, i) => <option key={i} value={i}>{i} Sec</option>)}
                 </select>
               </div>

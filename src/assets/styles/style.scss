@@ -135,6 +135,34 @@ input.form-control:focus {
   justify-content: center;
   align-items: center;      /* avoid cutting on small screens */
 }
+
+/* Fullscreen overlay */
+.loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(8px); /* background blur */
+  background: rgba(0, 0, 0, 0.3); /* optional dim overlay */
+  z-index: 9999;
+}
+
+/* Loader image */
+.loader img {
+  width: 80px;  /* adjust size */
+  height: 80px;
+  animation: spin 1.5s linear infinite;
+  filter: invert(43%) sepia(93%) saturate(1538%) hue-rotate(203deg) brightness(94%) contrast(92%);
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
 .container.small-container {
     @media only screen and (min-width: 1200px) {
         max-width:960px;

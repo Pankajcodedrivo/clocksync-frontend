@@ -7,6 +7,7 @@ import ScoreBoardComponent from "../components/ScoreBoardComponent";
 import { getField } from "../service/api.service";
 import useSocket from "../utils/sockect";
 import Ads from "../components/Ads";
+import loader from "../assets/images/loader.svg";
 interface Settings {
   desktop?: any
   mobile?: any
@@ -23,11 +24,13 @@ export default function Home({ settings }: HomeProps) {
   const navigate = useNavigate();
   const [game, setGame] = useState<any>(null);
   const [gameStatistics, setGameStatistics] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
 
    useEffect(() => {
     if (fieldslug) {
       const fetchData = async () => {
         try {
+          setLoading(true);
           const res = await getField(fieldslug);
           if (!res || res.status === 404) {
             navigate("/404");
@@ -35,10 +38,13 @@ export default function Home({ settings }: HomeProps) {
             setGame(res?.games);
             setGameStatistics(res?.gameStatistics);
           }
+          setLoading(false);
         } catch (err) {
+          setLoading(false);
           console.error("Error fetching field:", err);
           navigate("/404");
         } finally {
+          setLoading(false);
         }
       };
 
@@ -61,6 +67,9 @@ export default function Home({ settings }: HomeProps) {
     scoreUpdated: (stats: any) => {
       setGameStatistics(stats);
     },
+    removePenalty: (stats: any) => {
+      setGameStatistics(stats);
+    },
     statUpdated: (stats: any) => {
       setGameStatistics(stats);
     },
@@ -76,7 +85,16 @@ export default function Home({ settings }: HomeProps) {
   });
 
  
-  
+   if (loading) {
+        return (
+          <div className="loader-overlay">
+            <div className="loader">
+              <img src={loader} alt="loader" />
+            </div>
+          </div>
+        
+        );
+    }
 
   return (
     <div className="wrapper">

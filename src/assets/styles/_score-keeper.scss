@@ -47,8 +47,8 @@
         appearance: none;
 
         &.ngo-select {
-            max-width: 160px;
-            min-width: 160px;
+            max-width: 150px;
+            min-width: 150px;
             @media only screen and (max-width: 991px) {
                 max-width: 150px;
                 min-width: 150px;
@@ -60,8 +60,8 @@
         }
 
         &.name {
-            max-width: 160px;
-            min-width: 160px;
+            max-width: 150px;
+            min-width: 150px;
             @media only screen and (max-width: 991px) {
                 max-width: 150px;
                 min-width: 150px;
@@ -71,10 +71,14 @@
                 min-width: 140px;
             }
         }
+         &.ngo-type {
+            max-width: 115px;
+            min-width: 115px;
+        }
 
         &.mins-select {
-            max-width: 100px;
-            min-width: 100px;
+            max-width: 90px;
+            min-width: 90px;
             @media only screen and (max-width: 991px) {
                 max-width: 80px;
                 min-width: 80px;

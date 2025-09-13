@@ -5,15 +5,16 @@ import GameStatisticsScoreKeeper from "../components/GameStatisticsScoreKeeper";
 import LiveStatsTracker from "../components/LiveStatsTracker";
 import ScoreKeeperComponent from "../components/ScoreKeeperComponent";
 import AccArrow from "../assets/images/down-arrow-blue.svg";
+import loader from "../assets/images/loader.svg";
 import { getGame, verifyScoreKeeperCode } from "../service/api.service";
 import useSocket from "../utils/sockect";
 
 export default function ScoreKeeper() {
   const [searchParams] = useSearchParams();
   const [game, setGame] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
   const [gameStatistics, setGameStatistics] = useState<any>(null);
-
+  const [submittingGoal, setSubmittingGoal] = useState(false);
+  const [submittingPenalty, setSubmittingPenalty] = useState(false);
   // Form state
   const [goalTeam, setGoalTeam] = useState("home");
   const [goalPlayer, setGoalPlayer] = useState("");
@@ -24,7 +25,7 @@ export default function ScoreKeeper() {
   const [penaltyMinutes, setPenaltyMinutes] = useState("");
   const [penaltySeconds, setPenaltySeconds] = useState("");
   const [penaltyType, setPenaltyType] = useState("legal");
-
+  const [loading, setLoading] = useState(false);
   // URL param
   const urlCode = searchParams.get("code");
   const [accessToken, setAccessToken] = useState(sessionStorage.getItem("access_token") ?? "");
@@ -35,6 +36,7 @@ export default function ScoreKeeper() {
     const handleVerify = async () => {
       if (urlCode && !accessToken) {
         try {
+          setLoading(true);
           const res = await verifyScoreKeeperCode(urlCode);
           sessionStorage.setItem("access_token", res?.tokens?.access);
           sessionStorage.setItem("refresh_token", res?.tokens?.refresh);
@@ -42,6 +44,7 @@ export default function ScoreKeeper() {
           setAccessToken(res?.tokens?.access);
           setGameId(res?.gameId);
         } catch (err) {
+          setLoading(false);
           console.error("Failed to verify scorekeeper code:", err);
         }
       }
@@ -57,8 +60,10 @@ export default function ScoreKeeper() {
         setLoading(true);
         const gameData = await getGame(gameId, accessToken);
         setGame(gameData?.game);
+        setLoading(false);
         if (gameData?.gameStatistics) setGameStatistics(gameData.gameStatistics);
       } catch (err) {
+        setLoading(false);
         console.error("Error fetching game:", err);
       } finally {
         setLoading(false);
@@ -79,7 +84,10 @@ export default function ScoreKeeper() {
 
   // Dynamic Add Goal
   const handleAddGoal = () => {
+    if (submittingGoal) return; // ⛔ prevent double-clicks
     if (!goalPlayer || !goalMinute) return alert("Please select player and minute");
+
+    setSubmittingGoal(true); // 🔒 lock button
 
     const payload = {
       gameId,
@@ -93,11 +101,18 @@ export default function ScoreKeeper() {
       ...prev,
       goals: [...(prev?.goals || []), payload],
     }));
+
+    // ✅ unlock after short delay (or after socket ack if you add it)
+    setTimeout(() => setSubmittingGoal(false), 1000);
   };
 
   // Dynamic Add Penalty
   const handleAddPenalty = () => {
-    if (!penaltyPlayer || !penaltyMinutes || !penaltySeconds) return alert("Please fill all penalty fields");
+    if (submittingPenalty) return; // ⛔ prevent double-clicks
+    if (!penaltyPlayer || !penaltyMinutes || !penaltySeconds)
+      return alert("Please fill all penalty fields");
+
+    setSubmittingPenalty(true); // 🔒 lock button
 
     const payload = {
       gameId,
@@ -113,9 +128,21 @@ export default function ScoreKeeper() {
       ...prev,
       penalties: [...(prev?.penalties || []), payload],
     }));
+
+    setTimeout(() => setSubmittingPenalty(false), 1000);
   };
 
-  
+
+  if (loading) {
+        return (
+          <div className="loader-overlay">
+            <div className="loader">
+              <img src={loader} alt="loader" />
+            </div>
+          </div>
+        
+        );
+    }
   if (!game) {
         return (
         <div className="wrapper no-data">
@@ -157,7 +184,7 @@ export default function ScoreKeeper() {
                     <option key={i + 1} value={i + 1}>{i + 1}</option>
                   ))}
                 </select>
-                <button type="submit" onClick={handleAddGoal} className="btn btn-primary">Add Goal</button>
+                <button type="submit" onClick={handleAddGoal} disabled={submittingGoal} className="btn btn-primary">Add Goal</button>
               </div>
             </div>
           </div>
@@ -172,9 +199,9 @@ export default function ScoreKeeper() {
                   <option value="away">{game?.awayTeamName}</option>
                 </select>
                 <input type="number" placeholder="Player No" value={penaltyPlayer} onChange={(e) => setPenaltyPlayer(e.target.value)} className="form-control name" />
-                <select value={penaltyType} onChange={(e) => setPenaltyType(e.target.value)} className="form-control mins-select">
-                  <option value="illegal">Illegal</option>
-                  <option value="legal">Legal</option>
+                <select value={penaltyType} onChange={(e) => setPenaltyType(e.target.value)} className="form-control ngo-type">
+                  <option value="releasable">Releasable</option>
+                  <option value="non-releasable">Non-Releasable</option>
                 </select>
                 <select value={penaltyMinutes} onChange={(e) => setPenaltyMinutes(e.target.value)} className="form-control mins-select">
                   <option value="">Mins.</option>
@@ -189,7 +216,7 @@ export default function ScoreKeeper() {
                   ))}
                 </select>
                 
-                <button type="submit" onClick={handleAddPenalty} className="btn btn-primary">Add Penalty</button>
+                <button type="submit" onClick={handleAddPenalty}  disabled={submittingPenalty} className="btn btn-primary">Add Penalty</button>
               </div>
             </div>
           </div>
@@ -197,7 +224,7 @@ export default function ScoreKeeper() {
           {/* Active Penalties */}
           <div className="cmn-box">
             <h2>Active Penalties</h2>
-            <ActivePenalties gameStatistics={gameStatistics} game={game} />
+            <ActivePenalties gameStatistics={gameStatistics} game={game} setGameStatistics={setGameStatistics} socketEmit={emit}/>
           </div>
 
           {/* Game Statistics */}
