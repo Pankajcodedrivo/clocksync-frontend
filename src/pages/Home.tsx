@@ -67,7 +67,7 @@ export default function Home({ settings }: HomeProps) {
     scoreUpdated: (stats: any) => {
       setGameStatistics(stats);
     },
-    removePenalty: (stats: any) => {
+    penaltyRemoved: (stats: any) => {
       console.log(stats);
       setGameStatistics(stats);
     },

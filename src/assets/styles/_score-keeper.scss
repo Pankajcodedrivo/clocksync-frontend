@@ -7,7 +7,7 @@
     flex-wrap: wrap;
     gap: 20px;
     @media only screen and (max-width: 991px) {
-        gap: 10px;
+        gap: 7px;
     }
       @media only screen and (max-width: 767px) {
         justify-content: center;
@@ -19,6 +19,10 @@
     .btn {
         height: 40px;
         min-width: 135px;
+        @media only screen and (max-width: 991px) {
+            min-width: 120px;
+            padding: 13px 15px;
+        }
         @media only screen and (max-width: 575px) {
             min-width: 120px;
             padding: 12px 10px;
@@ -50,8 +54,8 @@
             max-width: 150px;
             min-width: 150px;
             @media only screen and (max-width: 991px) {
-                max-width: 150px;
-                min-width: 150px;
+                max-width: 110px;
+                min-width: 110px;
             }
             @media only screen and (max-width: 575px) {
                 max-width: 140px;
@@ -60,28 +64,28 @@
         }
 
         &.name {
-            max-width: 150px;
-            min-width: 150px;
+            max-width: 125px;
+            min-width: 125px;
             @media only screen and (max-width: 991px) {
-                max-width: 150px;
-                min-width: 150px;
+                max-width: 115px;
+                min-width: 115px;
             }
              @media only screen and (max-width: 575px) {
-                max-width: 140px;
-                min-width: 140px;
+                max-width: 125px;
+                min-width: 125px;
             }
         }
          &.ngo-type {
-            max-width: 115px;
-            min-width: 115px;
+            max-width: 140px;
+            min-width: 140px;
         }
 
         &.mins-select {
             max-width: 90px;
             min-width: 90px;
             @media only screen and (max-width: 991px) {
-                max-width: 80px;
-                min-width: 80px;
+                max-width: 70px;
+                min-width: 70px;
             }
             @media only screen and (max-width: 575px) {
                 max-width: 70px;
@@ -111,6 +115,9 @@
     justify-content: space-between;
     @media only screen and (max-width: 1400px) {
         gap: 6px;
+    }
+    @media only screen and (max-width: 991px) {
+        padding: 6px;
     }
     @media only screen and (max-width: 767px) {
         justify-content: center;
@@ -144,8 +151,8 @@
             max-width: 70px;
             @media only screen and (max-width: 991px) {
                 padding: 4px 6px;
-                min-width: 60px;
-                max-width: 60px;
+                min-width: 65px;
+                max-width: 65px;
                 font-size: 12px;
             }
         }
