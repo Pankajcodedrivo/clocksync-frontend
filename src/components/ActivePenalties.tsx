@@ -64,7 +64,7 @@ export default function ActivePenalties({
                 {socketEmit && (
                   <td>
                     {penalty?._id && (
-                      <a href="javacript:void(0)"
+                      <a href="#" className="remove-btn"
                         onClick={() => handleRemovePenalty(penalty._id)}
                       >
                         Remove

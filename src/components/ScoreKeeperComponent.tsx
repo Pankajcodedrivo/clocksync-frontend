@@ -23,8 +23,8 @@ export default function ScoreKeeperComponent({ gameStatistics,setGameStatistics,
   const [minutes, setMinutes] = useState<number>(gameStatistics?.clock?.minutes || 0);
   const [seconds, setSeconds] = useState<number>(gameStatistics?.clock?.seconds || 0);
   const [running, setRunning] = useState<boolean>(gameStatistics?.clock?.running || false);
-  const [tempMinutes, setTempMinutes] = useState<number>(minutes);
-  const [tempSeconds, setTempSeconds] = useState<number>(seconds);
+  const [tempMinutes, setTempMinutes] = useState<number>();
+  const [tempSeconds, setTempSeconds] = useState<number>();
 
   // Listen for updates from parent (which gets them from socket)
   useEffect(() => {

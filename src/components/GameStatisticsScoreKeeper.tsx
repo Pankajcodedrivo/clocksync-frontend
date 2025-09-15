@@ -88,6 +88,9 @@ export default function GameStatisticsScoreKeeper({ gameStatistics,setGameStatis
 
           {/* Penalties */}
           <div className="col-4 statictics-innr">
+            <div className="count-inn">
+              <h4>Penalties</h4>
+            </div>
             <p className="green lg">
               {homePenalties} <span>-</span> {awayPenalties}
             </p>
