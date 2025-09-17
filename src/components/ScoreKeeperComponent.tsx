@@ -23,8 +23,8 @@ export default function ScoreKeeperComponent({ gameStatistics,setGameStatistics,
   const [minutes, setMinutes] = useState<number>(gameStatistics?.clock?.minutes || 0);
   const [seconds, setSeconds] = useState<number>(gameStatistics?.clock?.seconds || 0);
   const [running, setRunning] = useState<boolean>(gameStatistics?.clock?.running || false);
-  const [tempMinutes, setTempMinutes] = useState<number>();
-  const [tempSeconds, setTempSeconds] = useState<number>();
+  const [tempMinutes, setTempMinutes] = useState<number>(0);
+  const [tempSeconds, setTempSeconds] = useState<number>(0);
 
   // Listen for updates from parent (which gets them from socket)
   useEffect(() => {
@@ -114,7 +114,7 @@ export default function ScoreKeeperComponent({ gameStatistics,setGameStatistics,
                 {gameStatistics?.goals
                   ?.filter((g: any) => g.team.toLowerCase() === "home")
                   .map((g: any, i: number) => (
-                    <li key={i}>{g.minute}’ #{g.playerNo}</li>
+                    <li key={i}>{g.minute}’{String(g.second).padStart(2, "0")}’’ #{g.playerNo}</li>
                   ))}
               </ul>
             </div>
@@ -171,7 +171,7 @@ export default function ScoreKeeperComponent({ gameStatistics,setGameStatistics,
                 {gameStatistics?.goals
                   ?.filter((g: any) => g.team.toLowerCase() === "away")
                   .map((g: any, i: number) => (
-                    <li key={i}>{g.minute}’ #{g.playerNo}</li>
+                    <li key={i}>{g.minute}’{String(g.second).padStart(2, "0")}’’ #{g.playerNo}</li>
                   ))}
               </ul>
             </div>

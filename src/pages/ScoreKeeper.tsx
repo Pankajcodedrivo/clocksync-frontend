@@ -19,7 +19,7 @@ export default function ScoreKeeper() {
   const [goalTeam, setGoalTeam] = useState("home");
   const [goalPlayer, setGoalPlayer] = useState("");
   const [goalMinute, setGoalMinute] = useState("");
-
+  const [goalSecond, setGoalSecond] = useState("");
   const [penaltyTeam, setPenaltyTeam] = useState("home");
   const [penaltyPlayer, setPenaltyPlayer] = useState("");
   const [penaltyMinutes, setPenaltyMinutes] = useState("");
@@ -100,6 +100,7 @@ export default function ScoreKeeper() {
       team: goalTeam,
       playerNo: parseInt(goalPlayer),
       minute: parseInt(goalMinute),
+      second:parseInt(goalSecond)
     };
 
     emit("addGoal", payload);
@@ -108,6 +109,7 @@ export default function ScoreKeeper() {
       goals: [...(prev?.goals || []), payload],
     }));
     setGoalPlayer("");
+    setGoalSecond("");
     setGoalMinute("");
     // ✅ unlock after short delay (or after socket ack if you add it)
     setTimeout(() => setSubmittingGoal(false), 1000);
@@ -182,11 +184,27 @@ export default function ScoreKeeper() {
                   <option value="home">{game?.homeTeamName}</option>
                   <option value="away">{game?.awayTeamName}</option>
                 </select>
-                <input type="number" placeholder="Player No" value={goalPlayer} onChange={(e) => setGoalPlayer(e.target.value)} className="form-control name" />
+                <input type="number" 
+                    placeholder="Player No" 
+                    value={goalPlayer} 
+                    onKeyDown={(e) => {
+                      if (["e", "E", "+", "-", "."].includes(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
+                    min="1" 
+                    onChange={(e) => setGoalPlayer(e.target.value)} 
+                    className="form-control name" />
                 <select value={goalMinute} onChange={(e) => setGoalMinute(e.target.value)} className="form-control mins-select">
                   <option value="">Mins.</option>
                   {Array.from({ length: 90 }, (_, i) => (
-                    <option key={i + 1} value={i + 1}>{i + 1}</option>
+                    <option key={i} value={i}>{i}</option>
+                  ))}
+                </select>
+                <select value={goalSecond} onChange={(e) => setGoalSecond(e.target.value)} className="form-control mins-select">
+                  <option value="">Secs.</option>
+                  {Array.from({ length: 60 }, (_, i) => (
+                    <option key={i} value={i}>{i}</option>
                   ))}
                 </select>
                 <button type="submit" onClick={handleAddGoal} disabled={submittingGoal} className="btn btn-primary">Add Goal</button>
@@ -211,7 +229,7 @@ export default function ScoreKeeper() {
                 <select value={penaltyMinutes} onChange={(e) => setPenaltyMinutes(e.target.value)} className="form-control mins-select">
                   <option value="">Mins.</option>
                   {Array.from({ length: 90 }, (_, i) => (
-                    <option key={i + 1} value={i + 1}>{i + 1}</option>
+                    <option key={i} value={i}>{i}</option>
                   ))}
                 </select>
                 <select value={penaltySeconds} onChange={(e) => setPenaltySeconds(e.target.value)} className="form-control mins-select">

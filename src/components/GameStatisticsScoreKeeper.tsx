@@ -89,7 +89,7 @@ export default function GameStatisticsScoreKeeper({ gameStatistics,setGameStatis
           {/* Penalties */}
           <div className="col-4 statictics-innr">
             <div className="count-inn">
-              <h4>Penalties</h4>
+              <h4>GROUND BALLS</h4>
             </div>
             <p className="green lg">
               {homePenalties} <span>-</span> {awayPenalties}
@@ -168,7 +168,7 @@ export default function GameStatisticsScoreKeeper({ gameStatistics,setGameStatis
 
           {/* Fouls */}
           <div className="col-md-4 statictics-innr">
-            <h4 className="sm">Face Off</h4>
+            <h4 className="sm">FACE OFF</h4>
             <div className="count-inn gap-10">
               <div className="qntity-info">
                 <span className="qty-btn sm" onClick={() => handleUpdateStat("home", "fouls", -1)}>
