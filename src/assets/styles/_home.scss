@@ -308,6 +308,54 @@
     }
   }
 }
+.mobile-score {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.score-home-team, .score-clock-card, .score-away-team{
+     width: 100px;
+      flex: 1;
+      h3{
+      @media only screen and (max-width: 767px) {
+        margin: 0 25px 30px !important;
+      }
+    }
+    .score,.timer{
+      @media only screen and (max-width: 767px) {
+          font-size: 50px;
+       }
+    }
+    .score-content {
+       @media only screen and (max-width: 767px) {
+          padding: 0 8px 50px!important;
+       }
+    }
+
+}
+.score-home-team{
+    .score-icon{
+       @media only screen and (max-width: 767px) {
+          margin-left: 10px;
+       }
+    }
+   
+}
+.score-clock-card{
+    .score-icon{
+       @media only screen and (max-width: 767px) {
+          margin-left: auto;
+       }
+    }
+}
+.score-away-team{
+    .score-icon{
+       @media only screen and (max-width: 767px) {
+          margin-right: 10px;
+       }
+    }
+}
 
 .sub-hdr {
   padding-bottom: 20px;
