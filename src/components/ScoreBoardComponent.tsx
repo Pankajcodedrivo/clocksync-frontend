@@ -16,47 +16,53 @@ export default function ScoreBoardComponent({ gameStatistics,game }: Props) {
     return (
         <div className="score-board-otr">
             <div className="row m-0 justify-content-center">
-                <div className="col-md-4 score-card-innr p-0">
+                <div className="col-md-12 score-card-innr p-0">
                     <div className="score-card">
-                        <div className="score-icon"><img src={game?.homeTeamLogo?game?.homeTeamLogo:iconngo} alt="home icon" /></div>
-                        <h3>{game?.homeTeamName}</h3>
-                        <div className="score-content">
-                            <h2 className="score">{homeScore}</h2>
-                            <ul>
-                                {gameStatistics?.goals
-                                ?.filter((g: any) => g.team.toLowerCase() === "home")
-                                .map((g: any, i: number) => (
-                                    <li key={i}>{g.minute}’ #{g.playerNo}</li>
-                                ))}
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div className="col-md-4 score-card-innr p-0">
-                    <div className="score-card">
-                        <div className="score-icon"><img src={iconclock} alt="" /></div>
-                        <h3>Quarters</h3>
-                        <div className="score-content">
-                            <h2 className="score">{quarter}</h2>
-                            <div className="timer">
-                                <span>{formatTime(minutes, seconds)}</span>
+                        <div className="team-score-wrap">
+                            <div className="score-icon"><img src={game?.homeTeamLogo?game?.homeTeamLogo:iconngo} alt="home icon" /></div>
+                            <h3>{game?.homeTeamName}</h3>
+                            <div className="score-content">
+                                <h2 className="score">{homeScore}</h2>
+                                <ul>
+                                    {gameStatistics?.goals
+                                    ?.filter((g: any) => g.team.toLowerCase() === "home")
+                                    .map((g: any, i: number) => (
+                                        <li key={i}>
+                                            {g.minute}’
+                                            {g.second ? `${String(g.second).padStart(2, "0")}’’ ` : ""} 
+                                            #{g.playerNo}
+                                        </li>
+                                    ))}
+                                </ul>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div className="col-md-4 score-card-innr p-0">
-                    <div className="score-card">
-                        <div className="score-icon"><img src={game?.awayTeamLogo?game?.awayTeamLogo:iconaway} alt="" /></div>
-                        <h3>{game?.awayTeamName}</h3>
-                        <div className="score-content">
-                            <h2 className="score">{awayScore}</h2>
-                            <ul>
-                                {gameStatistics?.goals
-                                ?.filter((g: any) => g.team.toLowerCase() === "away")
-                                .map((g: any, i: number) => (
-                                    <li key={i}>{g.minute}’ #{g.playerNo}</li>
-                                ))}
-                            </ul>
+                        <div className="team-score-wrap">
+                            <div className="score-icon"><img src={iconclock} alt="" /></div>
+                            <h3>Quarters</h3>
+                            <div className="score-content">
+                                <h2 className="score">{quarter}</h2>
+                                <div className="timer">
+                                    <span>{formatTime(minutes, seconds)}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="team-score-wrap">
+                            <div className="score-icon"><img src={game?.awayTeamLogo?game?.awayTeamLogo:iconaway} alt="" /></div>
+                            <h3>{game?.awayTeamName}</h3>
+                            <div className="score-content">
+                                <h2 className="score">{awayScore}</h2>
+                                <ul>
+                                    {gameStatistics?.goals
+                                    ?.filter((g: any) => g.team.toLowerCase() === "away")
+                                    .map((g: any, i: number) => (
+                                        <li key={i}>
+                                            {g.minute}’
+                                            {g.second ? `${String(g.second).padStart(2, "0")}’’ ` : ""} 
+                                            #{g.playerNo}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>

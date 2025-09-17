@@ -114,7 +114,11 @@ export default function ScoreKeeperComponent({ gameStatistics,setGameStatistics,
                 {gameStatistics?.goals
                   ?.filter((g: any) => g.team.toLowerCase() === "home")
                   .map((g: any, i: number) => (
-                    <li key={i}>{g.minute}’{String(g.second).padStart(2, "0")}’’ #{g.playerNo}</li>
+                    <li key={i}>
+                      {g.minute}’
+                      {g.second ? `${String(g.second).padStart(2, "0")}’’ ` : ""} 
+                      #{g.playerNo}
+                    </li>
                   ))}
               </ul>
             </div>
@@ -171,7 +175,11 @@ export default function ScoreKeeperComponent({ gameStatistics,setGameStatistics,
                 {gameStatistics?.goals
                   ?.filter((g: any) => g.team.toLowerCase() === "away")
                   .map((g: any, i: number) => (
-                    <li key={i}>{g.minute}’{String(g.second).padStart(2, "0")}’’ #{g.playerNo}</li>
+                    <li key={i}>
+                      {g.minute}’
+                      {g.second ? `${String(g.second).padStart(2, "0")}’’ ` : ""} 
+                      #{g.playerNo}
+                    </li>
                   ))}
               </ul>
             </div>
