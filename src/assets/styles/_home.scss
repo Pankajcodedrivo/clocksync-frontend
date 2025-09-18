@@ -313,13 +313,34 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  @media only screen and (max-width: 767px) {
+    align-items: flex-start;
+  }
 }
+
 .score-home-team, .score-clock-card, .score-away-team{
      width: 100px;
       flex: 1;
+      @media only screen and (max-width: 767px) {
+        padding: 0 10px;
+      }
       h3{
       @media only screen and (max-width: 767px) {
-        margin: 0 25px 30px !important;
+        // margin: 0 25px 30px !important;
+        margin: 0 0 20px!important;
+        border: 0!important;
+        position: relative;
+        &:after {
+          position: absolute;
+          content: '';
+          bottom: 0;
+          left: 0;
+          right: 0;
+          margin: auto;
+          height: 1px;
+          width: 30px;
+          background: rgba(255, 255, 255, 0.07);
+        }
       }
     }
     .score,.timer{
@@ -333,6 +354,34 @@
        }
     }
 
+}
+.score-home-team {
+  h3 {
+    &:after {
+      @media only screen and (max-width: 767px) {
+        right: auto;
+      }
+    }
+  }
+  h3,.score-content {
+    @media only screen and (max-width: 767px) {
+      text-align: left;
+    }
+  }
+}
+.score-away-team {
+  h3 {
+    &:after {
+      @media only screen and (max-width: 767px) {
+        left: auto;
+      }
+    }
+  }
+  h3,.score-content {
+    @media only screen and (max-width: 767px) {
+      text-align: right;
+    }
+  }
 }
 .score-home-team{
     .score-icon{
