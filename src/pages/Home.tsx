@@ -26,6 +26,7 @@ export default function Home({ settings }: HomeProps) {
   const [gameStatistics, setGameStatistics] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [notFound, setNotFound] = useState(false);
+  const [endGame,setEndGame] =useState(false);
 
   useEffect(() => {
     if (fieldslug) {
@@ -64,6 +65,7 @@ export default function Home({ settings }: HomeProps) {
         },
       }));
     },
+    gameEnded: (_) => setEndGame(true),
     scoreUpdated: (stats: any) => setGameStatistics(stats),
     penaltyRemoved: (stats: any) => setGameStatistics(stats),
     statUpdated: (stats: any) => setGameStatistics(stats),
@@ -81,7 +83,19 @@ export default function Home({ settings }: HomeProps) {
       </div>
     );
   }
-
+  if (endGame) {
+    return (
+      <div className="wrapper no-data">
+        <section className="score-board-sec">
+          <div className="container small-container">
+            <div className="score-top pd cmn-box pt-30">
+              <h1>Game is ended.</h1>
+            </div>
+          </div>
+        </section>
+      </div>
+    );
+  }
   if (notFound) {
     return (
       <div className="wrapper no-data">

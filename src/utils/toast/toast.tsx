@@ -36,9 +36,11 @@ export const showConfirmAlert = (title = '', desc = '') => {
     html: desc,
     showCancelButton: true,
     confirmButtonText: 'Yes',
-    cancelButtonColor: '#bcbaba',
-    confirmButtonColor: '#518FED',
     icon: 'question',
+     customClass: {
+      confirmButton: 'btn btn-primary',
+      cancelButton: 'btn btn-secendary',
+    },
   });
 };
 

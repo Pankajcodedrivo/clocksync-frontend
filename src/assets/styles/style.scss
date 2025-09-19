@@ -158,7 +158,17 @@ input.form-control:focus {
   animation: spin 1.5s linear infinite;
   filter: invert(43%) sepia(93%) saturate(1538%) hue-rotate(203deg) brightness(94%) contrast(92%);
 }
-
+.swal2-toast h2:where(.swal2-title) {
+    font-weight: 300;
+}
+div:where(.swal2-container).swal2-center>.swal2-popup {
+    background: #212529;
+    color: #fff;
+}
+div:where(.swal2-container) h2:where(.swal2-title) {
+    font-size: 28px;
+    font-weight: 200;
+}
 @keyframes spin {
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }

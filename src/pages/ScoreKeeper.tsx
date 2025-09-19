@@ -26,6 +26,7 @@ export default function ScoreKeeper() {
   const [penaltySeconds, setPenaltySeconds] = useState("");
   const [penaltyType, setPenaltyType] = useState("releasable");
   const [loading, setLoading] = useState(false);
+  const [endGame,setEndGame] =useState(false);
   // URL param
   const urlCode = searchParams.get("code");
   const [accessToken, setAccessToken] = useState(sessionStorage.getItem("access_token") ?? "");
@@ -74,6 +75,7 @@ export default function ScoreKeeper() {
 
   // Setup socket
   const { emit } = useSocket(gameId, {
+    gameEnded: (_) => setEndGame(true),
     clockUpdated: (clock: any) => {
       setGameStatistics((prev: any) => ({ ...prev, clock }));
     },
@@ -87,6 +89,7 @@ export default function ScoreKeeper() {
       setGameStatistics(stats);
     },
   });
+
 
   // Dynamic Add Goal
   const handleAddGoal = () => {
@@ -122,7 +125,6 @@ export default function ScoreKeeper() {
       return alert("Please fill all penalty fields");
 
     setSubmittingPenalty(true); // 🔒 lock button
-
     const payload = {
       gameId,
       team: penaltyTeam,
@@ -150,6 +152,19 @@ export default function ScoreKeeper() {
         
         );
     }
+  if (endGame) {
+    return (
+      <div className="wrapper no-data">
+        <section className="score-board-sec">
+          <div className="container small-container">
+            <div className="score-top pd cmn-box pt-30">
+              <h1>Game is ended.</h1>
+            </div>
+          </div>
+        </section>
+      </div>
+    );
+  }
   if (!game) {
         return (
         <div className="wrapper no-data">

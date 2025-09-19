@@ -7,6 +7,7 @@ import playbtn from "../assets/images/play-icon.svg";
 import pausebtn from "../assets/images/pause-icon.svg";
 import plus from "../assets/images/plus.svg";
 import minus from "../assets/images/minus.svg";
+import { showConfirmAlert, showErrorToast } from "../utils/toast/toast";
 
 interface Props {
   gameStatistics: any;
@@ -25,7 +26,7 @@ export default function ScoreKeeperComponent({ gameStatistics,setGameStatistics,
   const [running, setRunning] = useState<boolean>(gameStatistics?.clock?.running || false);
   const [tempMinutes, setTempMinutes] = useState<number>(0);
   const [tempSeconds, setTempSeconds] = useState<number>(0);
-
+  const [officialSigned, setOfficialSigned] = useState(false);
   // Listen for updates from parent (which gets them from socket)
   useEffect(() => {
     if (!gameStatistics?.clock) return;
@@ -92,8 +93,19 @@ export default function ScoreKeeperComponent({ gameStatistics,setGameStatistics,
     setTempSeconds(0);
   };
 
-  const handleReset = () => {
-    socketEmit("resetGame", { gameId });
+ 
+
+  const handleEnd = () => {
+    if (!officialSigned) {
+      showErrorToast("Please check 'Official Signature' before ending the game.");
+      return;
+    }
+    
+    const confirmEnd = showConfirmAlert("Are you sure you want to end the game? This cannot be undone.");
+    if (!confirmEnd) return;
+
+    // 🔹 Emit socket event to end the game
+    socketEmit("endGame", { gameId });
   };
 
   return (
@@ -187,9 +199,10 @@ export default function ScoreKeeperComponent({ gameStatistics,setGameStatistics,
         </div>
       </div>
 
-      {/* Reset */}
-      <div className="text-center mt-30 d-none d-md-block">
-        <button type="button" className="btn btn-primary" onClick={handleReset}>Reset Game</button>
+      {/* End Game */}
+      <div className="text-center mt-30 d-md-block">
+        <input type="checkbox" name="end_game" checked={officialSigned} onChange={(e) => setOfficialSigned(e.target.checked)} /> Official Signature
+        <button type="button" className="btn btn-primary" style={{marginLeft:"10px"}} onClick={handleEnd}>End Game</button>
       </div>
     </div>
   );
