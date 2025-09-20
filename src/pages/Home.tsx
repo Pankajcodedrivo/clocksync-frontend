@@ -26,6 +26,7 @@ export default function Home({ settings }: HomeProps) {
   const [gameStatistics, setGameStatistics] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [notFound, setNotFound] = useState(false);
+  const [message, setMessage] = useState("");
   const [endGame,setEndGame] =useState(false);
 
   useEffect(() => {
@@ -40,7 +41,10 @@ export default function Home({ settings }: HomeProps) {
             setGame(res?.games);
             setGameStatistics(res?.gameStatistics);
           }
-        } catch (err) {
+        } catch (err:any) {
+          if(err?.response?.data?.message){
+            setMessage(err?.response?.data?.message);
+          }
           console.error("Error fetching field:", err);
           setNotFound(true);
         } finally {
@@ -65,7 +69,10 @@ export default function Home({ settings }: HomeProps) {
         },
       }));
     },
-    gameEnded: (_) => setEndGame(true),
+    gameEnded: (_) => {
+      console.log(1);
+      setEndGame(true)
+    },
     scoreUpdated: (stats: any) => setGameStatistics(stats),
     penaltyRemoved: (stats: any) => setGameStatistics(stats),
     statUpdated: (stats: any) => setGameStatistics(stats),
@@ -102,7 +109,7 @@ export default function Home({ settings }: HomeProps) {
         <section className="score-board-sec">
           <div className="container small-container">
             <div className="score-top pd cmn-box pt-30">
-              <h1>Field not found.</h1>
+              <h1>{message?message:"Field not found."}</h1>
             </div>
           </div>
         </section>

@@ -60,6 +60,9 @@ export default function ScoreKeeper() {
       try {
         setLoading(true);
         const gameData = await getGame(gameId, accessToken);
+        if(gameData?.game?.endGame){
+          setEndGame(true);
+        } 
         setGame(gameData?.game);
         setLoading(false);
         if (gameData?.gameStatistics) setGameStatistics(gameData.gameStatistics);
@@ -75,7 +78,10 @@ export default function ScoreKeeper() {
 
   // Setup socket
   const { emit } = useSocket(gameId, {
-    gameEnded: (_) => setEndGame(true),
+    gameEnded: (_) => {
+      console.log(1);
+      setEndGame(true)
+    },
     clockUpdated: (clock: any) => {
       setGameStatistics((prev: any) => ({ ...prev, clock }));
     },

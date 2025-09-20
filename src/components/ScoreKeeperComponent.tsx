@@ -95,17 +95,18 @@ export default function ScoreKeeperComponent({ gameStatistics,setGameStatistics,
 
  
 
-  const handleEnd = () => {
+  const handleEnd = async() => {
     if (!officialSigned) {
       showErrorToast("Please check 'Official Signature' before ending the game.");
       return;
     }
     
-    const confirmEnd = showConfirmAlert("Are you sure you want to end the game? This cannot be undone.");
-    if (!confirmEnd) return;
+    const confirmEnd = await showConfirmAlert("Are you sure you want to end the game? This cannot be undone.");
+   
+    if (!confirmEnd.isConfirmed) return;
 
     // 🔹 Emit socket event to end the game
-    socketEmit("endGame", { gameId });
+    socketEmit("gameEnded", { gameId });
   };
 
   return (

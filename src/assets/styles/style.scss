@@ -165,9 +165,10 @@ div:where(.swal2-container).swal2-center>.swal2-popup {
     background: #212529;
     color: #fff;
 }
+
 div:where(.swal2-container) h2:where(.swal2-title) {
-    font-size: 28px;
-    font-weight: 200;
+    font-size: 28px !important;
+    font-weight: 200 !important;
 }
 @keyframes spin {
   from { transform: rotate(0deg); }
