@@ -32,7 +32,7 @@ export default function ActivePenalties({
   }
 
   return (
-    <div className="cmn-box-wrapper">
+    <div className="cmn-box-wrapper penalty-wrap">
       <table className="table">
         <thead>
           <tr>

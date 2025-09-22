@@ -237,11 +237,13 @@ div:where(.swal2-container) h2:where(.swal2-title) {
     padding: 10px;
     position: relative;
     z-index: 1;
-
     &.p-36 {
         padding-top: 36px;
         padding-bottom: 36px;
     }
+}
+.penalty-wrap{
+    overflow: auto;
 }
 
 .cmn-box {

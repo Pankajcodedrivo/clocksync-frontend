@@ -13,7 +13,7 @@
             background: transparent;
             border: 0;
             color: $color-white;
-            padding: 20px 40px;
+            padding: 20px 20px;
             font-size: 16px;
             font-weight: 400;
             font-family: $helvetica;
@@ -21,7 +21,7 @@
                 padding: 14px 25px;
             }
             @media only screen and (max-width: 575px) {
-                padding: 14px 10px;
+                padding: 14px 27px;
                 text-align: center;
             }
         }
@@ -31,7 +31,7 @@
             border: 0;
             border-bottom: 5px solid $color-body;
             color: $color-white;
-            padding: 10px 40px;
+            padding: 10px 30px;
             font-weight: 600;
             font-size: 14px;
             transition: all 0.4s;
@@ -39,7 +39,7 @@
                 padding: 10px 25px;
             }
             @media only screen and (max-width: 575px) {
-                padding: 14px 10px;
+                padding: 14px 18px;
                 text-align: center;
             }
             span {
