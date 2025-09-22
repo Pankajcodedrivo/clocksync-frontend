@@ -40,6 +40,8 @@ export default function ActivePenalties({
             <th>Type</th>
             <th>Player No</th>
             <th>Time</th>
+            <th>Start</th>
+            <th>End</th>
              {socketEmit && <th>Action</th>}
           </tr>
         </thead>
@@ -47,6 +49,14 @@ export default function ActivePenalties({
           {penalties.map((penalty: any, index: number) => {
             const teamName =
               penalty.team === "home" ? game?.homeTeamName : game?.awayTeamName;
+              let totalStartSeconds = penalty.startMinute * 60 + penalty.startSecond;
+              let totalPenaltySeconds = penalty.minutes * 60 + penalty.seconds;
+              let endTime = totalStartSeconds - totalPenaltySeconds;
+
+              if (endTime < 0) endTime = 0; // clamp so it doesn’t go negative
+
+              const endMinute = Math.floor(endTime / 60);
+              const endSecond = endTime % 60; 
 
             return (
               <tr key={penalty?._id ?? index}>
@@ -59,6 +69,18 @@ export default function ActivePenalties({
                   <span className="time">
                     {String(penalty.minutes).padStart(2, "0")} :{" "}
                     {String(penalty.seconds).padStart(2, "0")}
+                  </span>
+                </td>
+                <td>
+                  <span className="time">
+                    {String(penalty.startMinute).padStart(2, "0")} :{" "}
+                    {String(penalty.startSecond).padStart(2, "0")}
+                  </span>
+                </td>
+                <td>
+                  <span className="time">
+                    {String(endMinute).padStart(2, "0")} :{" "}
+                    {String(endSecond).padStart(2, "0")}
                   </span>
                 </td>
                 {socketEmit && (

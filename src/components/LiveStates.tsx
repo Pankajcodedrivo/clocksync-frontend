@@ -81,7 +81,7 @@ export default function LiveStatsTracker({
               <div className="traker-content">
                 <h5>Goal by #{g.playerNo}</h5>
                 <p>
-                  {title.toUpperCase()} - {g.minute}:00
+                  {title.toUpperCase()} - {String(g.minute).padStart(2, "0")}:{String(g.second).padStart(2, "0")}
                 </p>
               </div>
             </li>
@@ -97,7 +97,7 @@ export default function LiveStatsTracker({
                   {p.type} - #{p.playerNo}
                 </h5>
                 <p>
-                  {title.toUpperCase()} - {p.minutes}:{p.seconds}
+                  {title.toUpperCase()} - {String(p.startMinute).padStart(2, "0")}:{String(p.startSecond).padStart(2, "0")}
                 </p>
               </div>
             </li>
