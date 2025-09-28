@@ -237,7 +237,7 @@ export default function ScoreKeeper() {
           <div className="cmn-box">
             <h2>Add Penalty</h2>
             <div className="information-form-wrapper text-center">
-              <div className="information-form add-scorer">
+              <div className="information-form add-scorer add-penalty">
                 <select value={penaltyTeam} onChange={(e) => setPenaltyTeam(e.target.value)} className="form-control ngo-select">
                   <option value="home">{game?.homeTeamName}</option>
                   <option value="away">{game?.awayTeamName}</option>
