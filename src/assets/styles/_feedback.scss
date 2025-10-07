@@ -1,12 +1,11 @@
 .feedback-card {
-  max-width: 500px;
+  max-width: 600px;
   width: 95%;
   margin: 2rem auto;
-  background: #fff;
-  border-radius: 1rem;
+  border-radius: 20px;
   padding: 1.5rem 2rem;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  color: #222;
+  background: linear-gradient(180deg,#0f172acc 0% 37.37%,#0f172acc 82.23%);
+  color: #fff;
   box-sizing: border-box;
 
   .title {
@@ -18,14 +17,17 @@
     margin-bottom: 1.5rem;
 
     .icon {
-      width: 28px;
-      height: 28px;
+      width: 25px;
+      height: 25px;
     }
   }
 
   .feedback-section {
     margin-bottom: 1.5rem;
-
+    background: #181c2a;
+    box-shadow: 0 2px 20px #0c0f1b;
+    border-radius: 10px;
+    padding: 10px;
     h3 {
       display: flex;
       align-items: center;
@@ -39,9 +41,10 @@
         width: 28px;
         height: 28px;
         border-radius: 50%;
+        background: #000207;
         background-color: $color-blue;
         color: #fff;
-        font-weight: bold;
+        font-weight: 500;
         margin-right: 0.5rem;
         flex-shrink: 0;
       }
@@ -51,7 +54,7 @@
       display: flex;
       flex-direction: column;
       gap: 0.4rem;
-
+      margin-left: 35px;
       label {
         display: flex;
         align-items: center;
@@ -62,12 +65,16 @@
         input[type="radio"],
         input[type="checkbox"] {
           accent-color: $color-blue;
+          width: 17px;
+          height: 17px;
+          background: transparent;
         }
 
         .icon-small {
           width: 20px;
           height: 20px;
           flex-shrink: 0;
+          min-width: 20px;
         }
       }
 
@@ -79,10 +86,11 @@
         padding: 0.5rem;
         font-size: 0.9rem;
         border-radius: 0.5rem;
-        border: 1px solid #ccc;
+        border: 1px solid rgba(0,0,0,0.1);
         resize: vertical;
         transition: border 0.2s;
-
+        background: rgba(0,0,0,0.4);
+        color: #fff;
         &:focus {
           border-color: $color-blue;
           outline: none;
@@ -92,13 +100,16 @@
 
     .nested {
       margin-top: 0.5rem;
-      margin-left: 1.5rem;
+      margin-left: 35px;
       display: flex;
       flex-direction: column;
       gap: 0.4rem;
 
       label {
         font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
       }
     }
 
@@ -108,10 +119,10 @@
       cursor: pointer;
       margin-top: 0.4rem;
       user-select: none;
-
+      margin-left: 35px;
       .star {
-        width: 28px;
-        height: 28px;
+        width: 25px;
+        height: 25px;
         transition: transform 0.15s ease;
 
         &:hover {
@@ -135,7 +146,7 @@
     padding: 1rem 1.5rem;
 
     .title {
-      font-size: 1.1rem;
+      font-size: 1.3rem;
 
       .icon {
         width: 24px;
@@ -145,7 +156,7 @@
 
     .feedback-section {
       h3 {
-        font-size: 0.95rem;
+        font-size: 1rem;
 
         .step-number {
           width: 24px;
@@ -160,6 +171,7 @@
         .icon-small {
           width: 18px;
           height: 18px;
+          min-width: 18px;
         }
       }
 
@@ -182,8 +194,6 @@
     padding: 0.8rem 1rem;
 
     .title {
-      font-size: 1rem;
-
       .icon {
         width: 22px;
         height: 22px;
@@ -192,8 +202,6 @@
 
     .feedback-section {
       h3 {
-        font-size: 0.9rem;
-
         .step-number {
           width: 20px;
           height: 20px;
@@ -207,6 +215,7 @@
         .icon-small {
           width: 16px;
           height: 16px;
+          min-width: 16px;
         }
       }
 
@@ -222,4 +231,115 @@
     }
 
   }
+  .feedback-card .feedback-section .options, .feedback-card .feedback-section .stars {
+    margin-left: 0;
+  }
+    .feedback-card .feedback-section .options label {
+      font-size: 0.80rem;
+    }
+}
+.radio-container {
+  display: block;
+  position: relative;
+  padding-left: 25px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default radio button */
+.radio-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Create a custom radio button */
+.radio-container .checkmark {
+  position: absolute;
+  top: 3px;
+  left: 0;
+  height: 17px;
+  width: 17px;
+  background-color: transparent;
+  border:1px solid $color-blue;
+  border-radius: 50%;
+}
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.radio-container .checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the indicator (dot/circle) when checked */
+.radio-container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the indicator (dot/circle) */
+.radio-container .checkmark:after {
+ 	top: 4px;
+	left: 4px;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: $color-blue;
+}
+.checkbox-container {
+  display: block;
+  position: relative;
+  padding-left: 22px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.checkbox-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkbox-container .checkmark {
+  position: absolute;
+  top: 2px;
+  left: 0;
+  height: 15px;
+  width: 15px;
+  border: 1px solid $color-blue;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkbox-container .checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.checkbox-container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.checkbox-container .checkmark:after {
+  left: 4.5px;
+  top: 0.5px;
+  width: 5px;
+  height: 10px;
+  border: solid $color-blue;
+  border-width: 0 2px 2px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
 }

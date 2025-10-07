@@ -44,7 +44,7 @@ export default function ClockSynkFeedback() {
           <span className="step-number">1</span> Why are you leaving?
         </h3>
         <div className="options">
-          <label>
+          <label className="radio-container">
             <input
               type="radio"
               name="reason"
@@ -52,11 +52,12 @@ export default function ClockSynkFeedback() {
               checked={leavingReason === "game-over"}
               onChange={(e) => setLeavingReason(e.target.value)}
             />
+            <span className="checkmark"></span>
             <img src={gamepadImg} alt="gamepad" className="icon-small" /> Game’s
             over
           </label>
 
-          <label>
+          <label className="radio-container">
             <input
               type="radio"
               name="reason"
@@ -64,11 +65,12 @@ export default function ClockSynkFeedback() {
               checked={leavingReason === "checking-score"}
               onChange={(e) => setLeavingReason(e.target.value)}
             />
+             <span className="checkmark"></span>
             <img src={eyeImg} alt="eye" className="icon-small" /> Just checking
             the score
           </label>
 
-          <label>
+          <label className="radio-container">
             <input
               type="radio"
               name="reason"
@@ -76,11 +78,12 @@ export default function ClockSynkFeedback() {
               checked={leavingReason === "too-slow"}
               onChange={(e) => setLeavingReason(e.target.value)}
             />
+            <span className="checkmark"></span>
             <img src={turtleImg} alt="turtle" className="icon-small" /> It wasn’t
             updating fast enough
           </label>
 
-          <label className="other-label">
+          <label className="other-label radio-container">
             <input
               type="radio"
               name="reason"
@@ -88,6 +91,7 @@ export default function ClockSynkFeedback() {
               checked={leavingReason === "other"}
               onChange={(e) => setLeavingReason(e.target.value)}
             />
+            <span className="checkmark"></span>
             <img src={messageImg} alt="message" className="icon-small" /> Other
           </label>
 
@@ -131,7 +135,7 @@ export default function ClockSynkFeedback() {
           <span className="step-number">3</span> Did you notice any ads?
         </h3>
         <div className="options">
-          <label>
+          <label className="radio-container">
             <input
               type="radio"
               name="ads"
@@ -139,9 +143,10 @@ export default function ClockSynkFeedback() {
               checked={noticedAds === "yep"}
               onChange={(e) => setNoticedAds(e.target.value)}
             />
+            <span className="checkmark"></span>
             <img src={thumbsUpImg} alt="thumbs-up" className="icon-small" /> Yep
           </label>
-          <label>
+          <label className="radio-container">
             <input
               type="radio"
               name="ads"
@@ -149,6 +154,7 @@ export default function ClockSynkFeedback() {
               checked={noticedAds === "nope"}
               onChange={(e) => setNoticedAds(e.target.value)}
             />
+            <span className="checkmark"></span>
             <img
               src={thumbsDownImg}
               alt="thumbs-down"
@@ -156,7 +162,7 @@ export default function ClockSynkFeedback() {
             />{" "}
             Nope
           </label>
-          <label>
+          <label className="radio-container">
             <input
               type="radio"
               name="ads"
@@ -164,36 +170,40 @@ export default function ClockSynkFeedback() {
               checked={noticedAds === "shrug"}
               onChange={(e) => setNoticedAds(e.target.value)}
             />
+            <span className="checkmark"></span>
             <img src={shrugImg} alt="shrug" className="icon-small" /> Didn’t
             notice
           </label>
         </div>
 
         {noticedAds === "yep" && (
-          <div className="nested">
-            <p>Which one stood out?</p>
-            <label>
+          <div className="nested mt-3">
+            <h3 className="mb-1">Which one stood out?</h3>
+            <label className="checkbox-container">
               <input
                 type="checkbox"
                 checked={adSpot.includes("top")}
                 onChange={() => toggleAdSpot("top")}
               />
+              <span className="checkmark"></span>
               Top banner
             </label>
-            <label>
+            <label className="checkbox-container">
               <input
                 type="checkbox"
                 checked={adSpot.includes("bottom")}
                 onChange={() => toggleAdSpot("bottom")}
               />
+              <span className="checkmark"></span>
               Bottom banner
             </label>
-            <label>
+            <label className="checkbox-container">
               <input
                 type="checkbox"
                 checked={adSpot.includes("stats")}
                 onChange={() => toggleAdSpot("stats")}
               />
+              <span className="checkmark"></span>
               Stats screen
             </label>
           </div>
@@ -206,7 +216,7 @@ export default function ClockSynkFeedback() {
           <span className="step-number">4</span> Want to get involved?
         </h3>
         <div className="options">
-          <label>
+          <label className="radio-container">
             <input
               type="radio"
               name="involve"
@@ -214,10 +224,11 @@ export default function ClockSynkFeedback() {
               checked={involvement === "sponsor"}
               onChange={(e) => setInvolvement(e.target.value)}
             />
+            <span className="checkmark"></span>
             <img src={medalImg} alt="medal" className="icon-small" /> Sponsor a
             game
           </label>
-          <label>
+          <label className="radio-container">
             <input
               type="radio"
               name="involve"
@@ -225,10 +236,11 @@ export default function ClockSynkFeedback() {
               checked={involvement === "help"}
               onChange={(e) => setInvolvement(e.target.value)}
             />
+            <span className="checkmark"></span>
             <img src={megaphoneImg} alt="megaphone" className="icon-small" />{" "}
             Help keep score
           </label>
-          <label>
+          <label className="radio-container">
             <input
               type="radio"
               name="involve"
@@ -236,6 +248,7 @@ export default function ClockSynkFeedback() {
               checked={involvement === "watch"}
               onChange={(e) => setInvolvement(e.target.value)}
             />
+            <span className="checkmark"></span>
             <img src={xImg} alt="x" className="icon-small" /> Just watching
           </label>
         </div>
