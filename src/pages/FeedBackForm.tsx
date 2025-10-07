@@ -56,7 +56,7 @@ export default function ClockSynkFeedback() {
             <img src={gamepadImg} alt="gamepad" className="icon-small" /> Game’s
             over
           </label>
-
+          <p className="error">Please enter a valid address.</p>
           <label className="radio-container">
             <input
               type="radio"
@@ -69,7 +69,7 @@ export default function ClockSynkFeedback() {
             <img src={eyeImg} alt="eye" className="icon-small" /> Just checking
             the score
           </label>
-
+          <p className="error">Please enter a valid address.</p>
           <label className="radio-container">
             <input
               type="radio"
@@ -82,7 +82,7 @@ export default function ClockSynkFeedback() {
             <img src={turtleImg} alt="turtle" className="icon-small" /> It wasn’t
             updating fast enough
           </label>
-
+          <p className="error">Please enter a valid address.</p>
           <label className="other-label radio-container">
             <input
               type="radio"
@@ -94,7 +94,7 @@ export default function ClockSynkFeedback() {
             <span className="checkmark"></span>
             <img src={messageImg} alt="message" className="icon-small" /> Other
           </label>
-
+          <p className="error">Please enter a valid address.</p>
           {leavingReason === "other" && (
             <textarea
               className="other-textarea"
@@ -146,6 +146,7 @@ export default function ClockSynkFeedback() {
             <span className="checkmark"></span>
             <img src={thumbsUpImg} alt="thumbs-up" className="icon-small" /> Yep
           </label>
+          <p className="error">Please enter a valid address.</p>
           <label className="radio-container">
             <input
               type="radio"
@@ -162,6 +163,7 @@ export default function ClockSynkFeedback() {
             />{" "}
             Nope
           </label>
+          <p className="error">Please enter a valid address.</p>
           <label className="radio-container">
             <input
               type="radio"
@@ -174,6 +176,7 @@ export default function ClockSynkFeedback() {
             <img src={shrugImg} alt="shrug" className="icon-small" /> Didn’t
             notice
           </label>
+          <p className="error">Please enter a valid address.</p>
         </div>
 
         {noticedAds === "yep" && (
@@ -188,6 +191,7 @@ export default function ClockSynkFeedback() {
               <span className="checkmark"></span>
               Top banner
             </label>
+            <p className="error">Please enter a valid address.</p>
             <label className="checkbox-container">
               <input
                 type="checkbox"
@@ -197,6 +201,7 @@ export default function ClockSynkFeedback() {
               <span className="checkmark"></span>
               Bottom banner
             </label>
+            <p className="error">Please enter a valid address.</p>
             <label className="checkbox-container">
               <input
                 type="checkbox"
@@ -206,6 +211,7 @@ export default function ClockSynkFeedback() {
               <span className="checkmark"></span>
               Stats screen
             </label>
+            <p className="error">Please enter a valid address.</p>
           </div>
         )}
       </div>
@@ -228,6 +234,7 @@ export default function ClockSynkFeedback() {
             <img src={medalImg} alt="medal" className="icon-small" /> Sponsor a
             game
           </label>
+          <p className="error">Please enter a valid address.</p>
           <label className="radio-container">
             <input
               type="radio"
@@ -240,6 +247,7 @@ export default function ClockSynkFeedback() {
             <img src={megaphoneImg} alt="megaphone" className="icon-small" />{" "}
             Help keep score
           </label>
+          <p className="error">Please enter a valid address.</p>
           <label className="radio-container">
             <input
               type="radio"
@@ -251,6 +259,7 @@ export default function ClockSynkFeedback() {
             <span className="checkmark"></span>
             <img src={xImg} alt="x" className="icon-small" /> Just watching
           </label>
+          <p className="error">Please enter a valid address.</p>
         </div>
       </div>
 
