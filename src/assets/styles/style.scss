@@ -8,6 +8,7 @@
 @import './score-keeper';
 @import './game-statistics';
 @import './live-stats-tracker';
+@import './feedback';
 
 body,
 html {
@@ -198,7 +199,9 @@ div:where(.swal2-container) h2:where(.swal2-title) {
     // background-attachment: fixed;
     // background-position: center;
 }
-
+.full-width{
+    width: 100%;
+}
 .btn {
     border-radius: 5px;
     padding: 13px 25px;
