@@ -8,21 +8,15 @@ import { getField } from "../service/api.service";
 import useSocket from "../utils/sockect";
 import Ads from "../components/Ads";
 import loader from "../assets/images/loader.svg";
+import { Swiper, SwiperSlide } from "swiper/react"
+import { Autoplay } from "swiper/modules"   // 👈 Required for autoplay
 
-interface Settings {
-  desktop?: any;
-  mobile?: any;
-  googleAdClient?: string;
-  sitelogo?: string;
-  copyright?: string;
-}
-interface HomeProps {
-  settings?: Settings | null; // allow null or undefined
-}
-
-export default function Home({ settings }: HomeProps) {
+// Import Swiper styles
+import "swiper/css"
+export default function Home() {
   const { fieldslug } = useParams();
   const [game, setGame] = useState<any>(null);
+  const [field, setField] = useState<any>(null);
   const [gameStatistics, setGameStatistics] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [notFound, setNotFound] = useState(false);
@@ -38,6 +32,7 @@ export default function Home({ settings }: HomeProps) {
           if (!res || res.status === 404) {
             setNotFound(true);
           } else {
+            setField(res?.field);
             setGame(res?.games);
             setGameStatistics(res?.gameStatistics);
           }
@@ -122,10 +117,28 @@ export default function Home({ settings }: HomeProps) {
       <div className="add-sec">
         <div className="container small-container">
           <div className="add-otr d-block d-xl-none">
-            <Ads {...settings?.mobile?.top} clientKey={settings?.googleAdClient} />
+            <Swiper  modules={[Autoplay]}                  // 👈 Register module here
+              autoplay={{ delay: 3000, disableOnInteraction: false }}
+              loop={true}                           // 👈 Enable looping
+              slidesPerView={1}>
+              {field?.ads?.mobile?.top?.map((ad:any, idx:number) => (
+                <SwiperSlide key={idx}>
+                  <Ads image={ad.imageUrl} link={ad.link} />
+                </SwiperSlide>
+              ))}
+            </Swiper>
           </div>
           <div className="add-otr d-none d-xl-block">
-            <Ads {...settings?.desktop?.top} clientKey={settings?.googleAdClient} />
+            <Swiper  modules={[Autoplay]}                  // 👈 Register module here
+              autoplay={{ delay: 3000, disableOnInteraction: false }}
+              loop={true}                           // 👈 Enable looping
+              slidesPerView={1}>
+              {field?.ads?.desktop?.top?.map((ad:any, idx:number) => (
+                <SwiperSlide key={idx}>
+                  <Ads image={ad.imageUrl} link={ad.link} />
+                </SwiperSlide>
+              ))}
+            </Swiper>
           </div>
         </div>
       </div>
@@ -139,7 +152,17 @@ export default function Home({ settings }: HomeProps) {
           </div>
           <div className="add-sec text-center p-0 mb-30 d-block d-xl-none">
             <div className="add-otr">
-              <Ads {...settings?.mobile?.middle} clientKey={settings?.googleAdClient} />
+              <Swiper  modules={[Autoplay]}                  // 👈 Register module here
+                autoplay={{ delay: 3000, disableOnInteraction: false }}
+                loop={true}                           // 👈 Enable looping
+                slidesPerView={1}>
+                {field?.ads?.mobile?.middle?.map((ad:any, idx:number) => (
+                  <SwiperSlide key={idx}>
+                    <Ads image={ad.imageUrl} link={ad.link} />
+                  </SwiperSlide>
+                ))}
+            </Swiper>
+             
             </div>
           </div>
           <div className="cmn-box">
@@ -152,7 +175,16 @@ export default function Home({ settings }: HomeProps) {
           </div>
           <div className="add-sec text-center p-0 mb-30 d-block d-xl-none">
             <div className="add-otr">
-              <Ads {...settings?.mobile?.bottom} clientKey={settings?.googleAdClient} />
+              <Swiper  modules={[Autoplay]}                  // 👈 Register module here
+                autoplay={{ delay: 3000, disableOnInteraction: false }}
+                loop={true}                           // 👈 Enable looping
+                slidesPerView={1}>
+                  {field?.ads?.mobile?.bottom?.map((ad:any, idx:number) => (
+                    <SwiperSlide key={idx}>
+                      <Ads image={ad.imageUrl} link={ad.link} />
+                    </SwiperSlide>
+                  ))}
+              </Swiper>
             </div>
           </div>
           <div className="cmn-box mb-0">
@@ -161,10 +193,28 @@ export default function Home({ settings }: HomeProps) {
           </div>
         </div>
         <div className="left d-none d-xl-block">
-          <Ads {...settings?.desktop?.left} clientKey={settings?.googleAdClient} />
+            <Swiper  modules={[Autoplay]}                  // 👈 Register module here
+              autoplay={{ delay: 3000, disableOnInteraction: false }}
+              loop={true}                           // 👈 Enable looping
+              slidesPerView={1}>
+                {field?.ads?.desktop?.left?.map((ad:any, idx:number) => (
+                  <SwiperSlide key={idx}>
+                    <Ads image={ad.imageUrl} link={ad.link} />
+                  </SwiperSlide>
+                ))}
+            </Swiper>
         </div>
         <div className="right d-none d-xl-block">
-          <Ads {...settings?.desktop?.right} clientKey={settings?.googleAdClient} />
+            <Swiper  modules={[Autoplay]}                  // 👈 Register module here
+              autoplay={{ delay: 3000, disableOnInteraction: false }}
+              loop={true}                           // 👈 Enable looping
+              slidesPerView={1}>
+                {field?.ads?.desktop?.right?.map((ad:any, idx:number) => (
+                  <SwiperSlide key={idx}>
+                    <Ads image={ad.imageUrl} link={ad.link} />
+                  </SwiperSlide>
+                ))}
+            </Swiper>
         </div>
       </section>
     </div>

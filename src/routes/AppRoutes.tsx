@@ -3,19 +3,10 @@ import Home from "../pages/Home"
 import ScoreKeeper from "../pages/ScoreKeeper"
 import NotFound from "../pages/404"
 
-// define type for settings
-interface Settings {
-  [key: string]: any // you can replace this with exact shape if known
-}
-
-interface AppRoutesProps {
-  settings: Settings | null
-}
-
-export default function AppRoutes({ settings }: AppRoutesProps) {
+export default function AppRoutes() {
   return (
     <Routes>
-      <Route path="/:fieldslug" element={<Home  settings={settings}/>} />
+      <Route path="/:fieldslug" element={<Home/>} />
       <Route path="/score-keeper" element={<ScoreKeeper />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
