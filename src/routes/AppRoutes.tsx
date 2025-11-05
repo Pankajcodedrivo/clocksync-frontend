@@ -2,11 +2,21 @@ import { Routes, Route } from "react-router-dom"
 import Home from "../pages/Home"
 import ScoreKeeper from "../pages/ScoreKeeper"
 import NotFound from "../pages/404"
+import Game from "../pages/Game"
+// define type for settings
+interface Settings {
+  [key: string]: any // you can replace this with exact shape if known
+}
 
-export default function AppRoutes() {
+interface AppRoutesProps {
+  settings: Settings | null
+}
+
+export default function AppRoutes({ settings }: AppRoutesProps) {
   return (
     <Routes>
-      <Route path="/:fieldslug" element={<Home/>} />
+      <Route path="/:fieldslug" element={<Home  settings={settings}/>} />
+      <Route path="/game/:id" element={<Game settings={settings}/>} />
       <Route path="/score-keeper" element={<ScoreKeeper />} />
       <Route path="*" element={<NotFound />} />
     </Routes>

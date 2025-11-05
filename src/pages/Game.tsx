@@ -4,8 +4,7 @@ import ActivePenalties from "../components/ActivePenalties";
 import GameStatistics from "../components/GameStatistics";
 import LiveStatsTracker from "../components/LiveStatsTracker";
 import ScoreBoardComponent from "../components/ScoreBoardComponent";
-import { getField, getVerifiedCaptcha } from "../service/api.service";
-import useSocket from "../utils/sockect";
+import { getGameScoreByID, getVerifiedCaptcha } from "../service/api.service";
 import Ads from "../components/Ads";
 import loader from "../assets/images/loader.svg";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -31,15 +30,14 @@ interface HomeProps {
   settings?: Settings | null;
 }
 
-export default function Home({ settings }: HomeProps) {
-  const { fieldslug } = useParams();
+export default function Game({ settings }: HomeProps) {
+  const { id } = useParams();
   const [game, setGame] = useState<any>(null);
   const [field, setField] = useState<any>(null);
   const [gameStatistics, setGameStatistics] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [notFound, setNotFound] = useState(false);
   const [message, setMessage] = useState("");
-  const [endGame, setEndGame] = useState(false);
   const [verified, setVerified] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
 
@@ -67,11 +65,11 @@ export default function Home({ settings }: HomeProps) {
   };
 
   useEffect(() => {
-    if (fieldslug) {
+    if (id) {
       const fetchData = async () => {
         try {
           setLoading(true);
-          const res = await getField(fieldslug);
+          const res = await getGameScoreByID(id);
           if (!res || res.status === 404) {
             setNotFound(true);
           } else {
@@ -91,9 +89,32 @@ export default function Home({ settings }: HomeProps) {
       };
       fetchData();
     }
-  }, [fieldslug]);
+  }, [id]);
 
-  // 📤 Social share
+  const adsTime =
+  field && field.adsTime && !isNaN(field.adsTime) && Number(field.adsTime) > 0
+    ? Number(field.adsTime) * 1000
+    : 30000;
+  // ✅ Helper: normalize ads (works with array or single object)
+  const normalizeAds = (ads: any) => {
+    if (!ads) return [];
+    return Array.isArray(ads) ? ads : [ads];
+  };
+
+  // ✅ Helper: get ads with fallback to settings
+  const getAds = (
+    placement: "top" | "right" | "left" | "middle" | "bottom",
+    device: "desktop" | "mobile"
+  ) => {
+    const fieldAds = normalizeAds(field?.ads?.[device]?.[placement]);
+   
+    if (fieldAds.length > 0) return fieldAds;
+
+    const settingAds = normalizeAds(settings?.[device]?.[placement]);
+    return settingAds;
+  };
+
+  // 📤 Share handler
   const handleSharePlatform = async (platform: string) => {
     try {
       const BASE_URL = window.location.origin;
@@ -106,19 +127,34 @@ export default function Home({ settings }: HomeProps) {
           window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`, "_blank");
           break;
         case "twitter":
-          window.open(`https://twitter.com/intent/tweet?text=${encodedMessage}&url=${encodedUrl}`, "_blank");
+          window.open(
+            `https://twitter.com/intent/tweet?text=${encodedMessage}&url=${encodedUrl}`,
+            "_blank"
+          );
           break;
         case "whatsapp":
-          window.open(`https://api.whatsapp.com/send?text=${encodedMessage}%20${encodedUrl}`, "_blank");
+          window.open(
+            `https://api.whatsapp.com/send?text=${encodedMessage}%20${encodedUrl}`,
+            "_blank"
+          );
           break;
         case "linkedin":
-          window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`, "_blank");
+          window.open(
+            `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
+            "_blank"
+          );
           break;
         case "telegram":
-          window.open(`https://t.me/share/url?url=${encodedUrl}&text=${encodedMessage}`, "_blank");
+          window.open(
+            `https://t.me/share/url?url=${encodedUrl}&text=${encodedMessage}`,
+            "_blank"
+          );
           break;
         case "reddit":
-          window.open(`https://reddit.com/submit?url=${encodedUrl}&title=${encodedMessage}`, "_blank");
+          window.open(
+            `https://reddit.com/submit?url=${encodedUrl}&title=${encodedMessage}`,
+            "_blank"
+          );
           break;
       }
     } catch (err) {
@@ -129,46 +165,7 @@ export default function Home({ settings }: HomeProps) {
     }
   };
 
-  useSocket(game?._id, {
-    clockUpdated: (clock: any) => {
-      setGameStatistics((prev: any) => ({ ...prev, clock }));
-    },
-    setQuater: (stats: any) => {
-      setGameStatistics((prev: any) => ({
-        ...prev,
-        clock: { ...prev.clock, quarter: stats.clock.quarter },
-      }));
-    },
-    gameEnded: () => setEndGame(true),
-    scoreUpdated: (stats: any) => setGameStatistics(stats),
-    penaltyRemoved: (stats: any) => setGameStatistics(stats),
-    statUpdated: (stats: any) => setGameStatistics(stats),
-    goalAdded: (stats: any) => setGameStatistics(stats),
-    penaltyAdded: (stats: any) => setGameStatistics(stats),
-    gameReset: (stats: any) => setGameStatistics(stats),
-  });
-  const adsTime =
-  field && field.adsTime && !isNaN(field.adsTime) && Number(field.adsTime) > 0
-    ? Number(field.adsTime) * 1000
-    : 30000;
-  // ✅ Get ads safely (handles array or single ad, with fallback)
-  const getAds = (
-    placement: "top" | "right" | "left" | "middle" | "bottom",
-    device: "desktop" | "mobile"
-  ) => {
-    const fieldAds = field?.ads?.[device]?.[placement];
-    const settingAds = settings?.[device]?.[placement];
-
-    const normalize = (ads: any) => {
-      if (!ads) return [];
-      return Array.isArray(ads) ? ads : [ads];
-    };
-
-    const ads = normalize(fieldAds);
-    if (ads.length > 0) return ads;
-    return normalize(settingAds);
-  };
-
+  // ✅ Loader state
   if (loading) {
     return (
       <div className="loader-overlay">
@@ -179,27 +176,13 @@ export default function Home({ settings }: HomeProps) {
     );
   }
 
-  if (endGame) {
-    return (
-      <div className="wrapper no-data">
-        <section className="score-board-sec">
-          <div className="container small-container">
-            <div className="score-top pd cmn-box pt-30">
-              <h1>Game is ended.</h1>
-            </div>
-          </div>
-        </section>
-      </div>
-    );
-  }
-
   if (notFound) {
     return (
       <div className="wrapper no-data">
         <section className="score-board-sec">
           <div className="container small-container">
             <div className="score-top pd cmn-box pt-30">
-              <h1>{message || "Field not found."}</h1>
+              <h1>{message ? message : "Field not found."}</h1>
             </div>
           </div>
         </section>
@@ -229,7 +212,7 @@ export default function Home({ settings }: HomeProps) {
 
   return (
     <div className="wrapper">
-      {/* Share Button */}
+      {/* Sticky action buttons */}
       <div className="action-buttons">
         <button
           onClick={() => {
@@ -249,7 +232,6 @@ export default function Home({ settings }: HomeProps) {
           Share
         </button>
       </div>
-
       {/* Popup Modal */}
       {showPopup && (
         <div
@@ -298,7 +280,15 @@ export default function Home({ settings }: HomeProps) {
 
             <button
               onClick={() => setShowPopup(false)}
-              className="btn btn-primary"
+              style={{
+                marginTop: "15px",
+                backgroundColor: "#3B82F6",
+                color: "#fff",
+                border: "none",
+                padding: "6px 12px",
+                borderRadius: "6px",
+                cursor: "pointer",
+              }}
             >
               Close
             </button>
@@ -306,9 +296,10 @@ export default function Home({ settings }: HomeProps) {
         </div>
       )}
 
-      {/* Page Content */}
+      {/* Ads + Content */}
       <div className="add-sec">
         <div className="container small-container">
+          {/* Mobile Top */}
           <div className="add-otr d-block d-xl-none">
             <Swiper modules={[Autoplay]} autoplay={{ delay: adsTime, disableOnInteraction: false }} loop slidesPerView={1}>
               {getAds("top", "mobile").map((ad: any, idx: number) => (
@@ -318,6 +309,8 @@ export default function Home({ settings }: HomeProps) {
               ))}
             </Swiper>
           </div>
+
+          {/* Desktop Top */}
           <div className="add-otr d-none d-xl-block">
             <Swiper modules={[Autoplay]} autoplay={{ delay: adsTime, disableOnInteraction: false }} loop slidesPerView={1}>
               {getAds("top", "desktop").map((ad: any, idx: number) => (
@@ -339,17 +332,15 @@ export default function Home({ settings }: HomeProps) {
             <ScoreBoardComponent gameStatistics={gameStatistics} game={game} />
           </div>
 
-          {/* Mobile middle ads */}
+          {/* Mobile Middle */}
           <div className="add-sec text-center p-0 mb-30 d-block d-xl-none">
-            <div className="add-otr">
-              <Swiper modules={[Autoplay]} autoplay={{ delay: adsTime, disableOnInteraction: false }} loop slidesPerView={1}>
-                {getAds("middle", "mobile").map((ad: any, idx: number) => (
-                  <SwiperSlide key={idx}>
-                    <Ads image={ad.imageUrl || ad.image} link={ad.link} />
-                  </SwiperSlide>
-                ))}
-              </Swiper>
-            </div>
+            <Swiper modules={[Autoplay]} autoplay={{ delay: adsTime, disableOnInteraction: false }} loop slidesPerView={1}>
+              {getAds("middle", "mobile").map((ad: any, idx: number) => (
+                <SwiperSlide key={idx}>
+                  <Ads image={ad.imageUrl || ad.image} link={ad.link} />
+                </SwiperSlide>
+              ))}
+            </Swiper>
           </div>
 
           <div className="cmn-box">
@@ -362,17 +353,15 @@ export default function Home({ settings }: HomeProps) {
             <GameStatistics gameStatistics={gameStatistics} game={game} />
           </div>
 
-          {/* Mobile bottom ads */}
+          {/* Mobile Bottom */}
           <div className="add-sec text-center p-0 mb-30 d-block d-xl-none">
-            <div className="add-otr">
-              <Swiper modules={[Autoplay]} autoplay={{ delay: adsTime, disableOnInteraction: false }} loop slidesPerView={1}>
-                {getAds("bottom", "mobile").map((ad: any, idx: number) => (
-                  <SwiperSlide key={idx}>
-                    <Ads image={ad.imageUrl || ad.image} link={ad.link} />
-                  </SwiperSlide>
-                ))}
-              </Swiper>
-            </div>
+            <Swiper modules={[Autoplay]} autoplay={{ delay: adsTime, disableOnInteraction: false }} loop slidesPerView={1}>
+              {getAds("bottom", "mobile").map((ad: any, idx: number) => (
+                <SwiperSlide key={idx}>
+                  <Ads image={ad.imageUrl || ad.image} link={ad.link} />
+                </SwiperSlide>
+              ))}
+            </Swiper>
           </div>
 
           <div className="cmn-box mb-0">
@@ -381,7 +370,7 @@ export default function Home({ settings }: HomeProps) {
           </div>
         </div>
 
-        {/* Desktop left ads */}
+        {/* Desktop Left */}
         <div className="left d-none d-xl-block">
           <Swiper modules={[Autoplay]} autoplay={{ delay: adsTime, disableOnInteraction: false }} loop slidesPerView={1}>
             {getAds("left", "desktop").map((ad: any, idx: number) => (
@@ -392,7 +381,7 @@ export default function Home({ settings }: HomeProps) {
           </Swiper>
         </div>
 
-        {/* Desktop right ads */}
+        {/* Desktop Right */}
         <div className="right d-none d-xl-block">
           <Swiper modules={[Autoplay]} autoplay={{ delay: adsTime, disableOnInteraction: false }} loop slidesPerView={1}>
             {getAds("right", "desktop").map((ad: any, idx: number) => (

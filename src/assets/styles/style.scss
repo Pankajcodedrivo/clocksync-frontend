@@ -321,3 +321,31 @@ div:where(.swal2-container) h2:where(.swal2-title) {
         }
     }
 }
+
+.action-buttons button {
+    margin: 5px;
+}
+.action-buttons .btn-secondary {
+    background-color: #3B82F6;
+}
+.action-buttons .btn-secondary:hover {
+    background-color: #F97316;
+}
+/* Container positioning for sticky behavior */
+.action-buttons {
+  position: fixed;
+  right: 20px;
+  top: 5%;
+  gap: 10px;
+  z-index: 99999;
+}
+
+/* Mobile responsive adjustment */
+@media (max-width: 768px) {
+  .action-buttons {
+    top: auto;
+    bottom: 20px;
+    right:24%;
+    transform: translateX(30%);
+  }
+}

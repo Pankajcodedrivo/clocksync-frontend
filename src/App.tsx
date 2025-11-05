@@ -26,7 +26,7 @@ function App() {
   return (
     <div className="wrapper mainClass" style={{backgroundImage: `url(${bgImage})`}}>
     <Header settings={settings}/>
-    <AppRoutes />
+    <AppRoutes settings={settings} />
     <Footer  settings={settings} />
     </div>
   )
