@@ -50,7 +50,7 @@ export default function ScoreKeeper() {
         }
       }
     };
-    handleVerify();
+    //handleVerify();
   }, [urlCode]);
 
   // Fetch game & initialize statistics
@@ -171,7 +171,7 @@ export default function ScoreKeeper() {
       </div>
     );
   }
-  if (!game) {
+ /* if (!game) {
         return (
         <div className="wrapper no-data">
             <section className="score-board-sec">
@@ -183,7 +183,7 @@ export default function ScoreKeeper() {
             </section>
         </div>
         );
-    }
+    } */
 
   return (
     <div className="wrapper">

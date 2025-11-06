@@ -116,7 +116,7 @@ export default function ScoreKeeperComponent({ gameStatistics,setGameStatistics,
         <div className="col-md-4 score-card-innr p-0">
           <div className="score-card">
             <div className="score-icon"><img src={game?.homeTeamLogo?game?.homeTeamLogo:iconngo} alt="home icon" /></div>
-            <h3>{game?.homeTeamName}</h3>
+            <h3>{game?.homeTeamName ||"Home"}</h3>
             <div className="score-content">
               <div className="quantity">
                 <button className="qty-btn" onClick={() => handleUpdateScore("home", -1)}><img src={minus} alt="-" /></button>
@@ -177,7 +177,7 @@ export default function ScoreKeeperComponent({ gameStatistics,setGameStatistics,
         <div className="col-md-4 score-card-innr p-0">
           <div className="score-card">
             <div className="score-icon"><img src={game?.awayTeamLogo?game?.awayTeamLogo:iconaway} alt="away icon" /></div>
-            <h3>{game?.awayTeamName}</h3>
+            <h3>{game?.awayTeamName || "Away"}</h3>
             <div className="score-content">
               <div className="quantity">
                 <button className="qty-btn" onClick={() => handleUpdateScore("away", -1)}><img src={minus} alt="-" /></button>
