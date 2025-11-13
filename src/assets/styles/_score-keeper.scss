@@ -191,7 +191,9 @@
         }
     }
 }
-
+.score-board-sec .score-card{
+    width: 90%;
+}
 .quantity {
     display: flex;
     gap: 20px;
@@ -220,10 +222,10 @@
         }
     }
     input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
     button {
         width: 36px;
         min-width: 36px;

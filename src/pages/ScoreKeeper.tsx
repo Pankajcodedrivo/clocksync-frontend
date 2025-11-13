@@ -8,6 +8,8 @@ import AccArrow from "../assets/images/down-arrow-blue.svg";
 import loader from "../assets/images/loader.svg";
 import { getGame, verifyScoreKeeperCode } from "../service/api.service";
 import useSocket from "../utils/sockect";
+import ActionComponent from "../components/ActionComponent";
+import RecentActivities from "../components/RecentActivities";
 
 export default function ScoreKeeper() {
   const [searchParams] = useSearchParams();
@@ -50,7 +52,7 @@ export default function ScoreKeeper() {
         }
       }
     };
-    //handleVerify();
+    handleVerify();
   }, [urlCode]);
 
   // Fetch game & initialize statistics
@@ -171,7 +173,7 @@ export default function ScoreKeeper() {
       </div>
     );
   }
- /* if (!game) {
+  if (!game) {
         return (
         <div className="wrapper no-data">
             <section className="score-board-sec">
@@ -183,117 +185,30 @@ export default function ScoreKeeper() {
             </section>
         </div>
         );
-    } */
+    } 
 
   return (
     <div className="wrapper">
       <section className="score-board-sec">
-        <div className="container small-container">
+        <div className="container">
           <div className="score-top pd cmn-box pt-30">
             <div className="text-center hdr">
               <h1>Score Keeper</h1>
             </div>
-            <ScoreKeeperComponent gameStatistics={gameStatistics} setGameStatistics={setGameStatistics} socketEmit={emit} game={game} />
+            <ScoreKeeperComponent gameStatistics={gameStatistics} game={game} />
           </div>
-
-          {/* Add Goal */}
-          <div className="cmn-box">
-            <h2>Add Goal</h2>
-            <div className="information-form-wrapper text-center">
-              <div className="information-form add-scorer">
-                <select value={goalTeam} onChange={(e) => setGoalTeam(e.target.value)} className="form-control ngo-select">
-                  <option value="home">{game?.homeTeamName}</option>
-                  <option value="away">{game?.awayTeamName}</option>
-                </select>
-                <input type="number" 
-                    placeholder="Player No" 
-                    value={goalPlayer} 
-                    onKeyDown={(e) => {
-                      if (["e", "E", "+", "-", "."].includes(e.key)) {
-                        e.preventDefault();
-                      }
-                    }}
-                    min="1" 
-                    onChange={(e) => setGoalPlayer(e.target.value)} 
-                    className="form-control name" />
-                <select value={goalMinute} onChange={(e) => setGoalMinute(e.target.value)} className="form-control mins-select">
-                  <option value="">Mins.</option>
-                  {Array.from({ length: 90 }, (_, i) => (
-                    <option key={i} value={i}>{i}</option>
-                  ))}
-                </select>
-                <select value={goalSecond} onChange={(e) => setGoalSecond(e.target.value)} className="form-control mins-select">
-                  <option value="">Secs.</option>
-                  {Array.from({ length: 60 }, (_, i) => (
-                    <option key={i} value={i}>{i}</option>
-                  ))}
-                </select>
-                <button type="submit" onClick={handleAddGoal} disabled={submittingGoal} className="btn btn-primary">Add Goal</button>
+          <div className="actions-outer-wrap">
+              <div className="action-inner">
+                <ActionComponent gameStatistics={gameStatistics} game={game} teamName="home"/>
+                <ActionComponent gameStatistics={gameStatistics} game={game} teamName="away"/>
               </div>
-            </div>
+          </div>
+          <div className="eventlist-outer-wrap">
+            <RecentActivities  gameStatistics={gameStatistics} game={game} />
           </div>
 
-          {/* Add Penalties */}
-          <div className="cmn-box">
-            <h2>Add Penalty</h2>
-            <div className="information-form-wrapper text-center">
-              <div className="information-form add-scorer add-penalty">
-                <select value={penaltyTeam} onChange={(e) => setPenaltyTeam(e.target.value)} className="form-control ngo-select">
-                  <option value="home">{game?.homeTeamName}</option>
-                  <option value="away">{game?.awayTeamName}</option>
-                </select>
-                <input type="number" placeholder="Player No" value={penaltyPlayer} onChange={(e) => setPenaltyPlayer(e.target.value)} className="form-control name" />
-                <select value={penaltyType} onChange={(e) => setPenaltyType(e.target.value)} className="form-control ngo-type">
-                  <option value="releasable">Releasable</option>
-                  <option value="non-releasable">Non-Releasable</option>
-                </select>
-                <select value={penaltyMinutes} onChange={(e) => setPenaltyMinutes(e.target.value)} className="form-control mins-select">
-                  <option value="">Mins.</option>
-                  {Array.from({ length: 90 }, (_, i) => (
-                    <option key={i} value={i}>{i}</option>
-                  ))}
-                </select>
-                <select value={penaltySeconds} onChange={(e) => setPenaltySeconds(e.target.value)} className="form-control mins-select">
-                  <option value="">Sec.</option>
-                  {Array.from({ length: 60 }, (_, i) => (
-                    <option key={i} value={i}>{i}</option>
-                  ))}
-                </select>
-                
-                <button type="submit" onClick={handleAddPenalty}  disabled={submittingPenalty} className="btn btn-primary">Add Penalty</button>
-              </div>
-            </div>
           </div>
-
-          {/* Active Penalties */}
-          <div className="cmn-box">
-            <h2>Active Penalties</h2>
-            <ActivePenalties gameStatistics={gameStatistics} game={game}  socketEmit={emit}/>
-          </div>
-
-          {/* Game Statistics */}
-          <div className="cmn-box">
-            <h2>Game Statistics</h2>
-            <button type="button" data-bs-toggle="collapse" data-bs-target="#game-statistics" className="acc-arrow">
-              <img src={AccArrow} alt="" />
-            </button>
-            <div className="collapse" id="game-statistics">
-              <GameStatisticsScoreKeeper gameStatistics={gameStatistics} setGameStatistics={setGameStatistics} emit={emit} game={game} />
-            </div>
-          </div>
-
-          {/* Live Stats Tracker */}
-          <div className="cmn-box mb-0">
-            <h2>Live Stats Tracker</h2>
-            <button type="button" data-bs-toggle="collapse" data-bs-target="#live-stats-tracker" className="acc-arrow">
-              <img src={AccArrow} alt="" />
-            </button>
-            <div className="collapse" id="live-stats-tracker">
-              <LiveStatsTracker gameStatistics={gameStatistics} game={game} />
-            </div>
-          </div>
-        </div>
-      </section>
+        </section>
     </div>
   );
 }
