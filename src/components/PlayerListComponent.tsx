@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import crossCircle from "../assets/images/mdi_cross-circle-outline.svg";
 
 interface PlayerListProps {
+  teamName:any,
   onSelectPlayer: (num: number | null) => void;
 }
 
-const PlayerListComponent: React.FC<PlayerListProps> = ({ onSelectPlayer }) => {
+const PlayerListComponent: React.FC<PlayerListProps> = ({teamName, onSelectPlayer }) => {
   const [search, setSearch] = useState<string>("");
   const players: number[] = Array.from({ length: 100 }, (_, i) => i);
 
@@ -19,7 +20,7 @@ const PlayerListComponent: React.FC<PlayerListProps> = ({ onSelectPlayer }) => {
         <div className="close-popup" onClick={() => onSelectPlayer(null)}>
           <img src={crossCircle} alt="Close" />
         </div>
-        <h3>Select Player</h3>
+        <h3>Select Player - {teamName}</h3>
 
         <div className="search-player">
           <input

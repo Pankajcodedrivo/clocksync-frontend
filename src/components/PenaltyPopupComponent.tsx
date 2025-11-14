@@ -4,13 +4,20 @@ import PlayerListComponent from "./PlayerListComponent";
 
 interface PenaltyPopupProps {
   teamName: string;
+  onSubmit: (data: any) => void;      // ⬅ returns penalty data to parent
+  onClose: () => void;                // ⬅ closes popup
 }
 
-const PenaltyPopupComponent: React.FC<PenaltyPopupProps> = ({ teamName }) => {
+const PenaltyPopupComponent: React.FC<PenaltyPopupProps> = ({
+  teamName,
+  onSubmit,
+  onClose
+}) => {
   const [showPlayerList, setShowPlayerList] = useState(false);
   const [selectedPlayer, setSelectedPlayer] = useState<number | null>(null);
   const [duration, setDuration] = useState<number>(30);
   const [releasable, setReleasable] = useState<boolean>(false);
+  const [infraction, setInfraction] = useState<string>("slashing");
 
   const handleAddTime = (seconds: number) => {
     setDuration((prev) => prev + seconds);
@@ -22,25 +29,43 @@ const PenaltyPopupComponent: React.FC<PenaltyPopupProps> = ({ teamName }) => {
     return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   };
 
+  const submitPenalty = () => {
+    if (selectedPlayer === null) {
+      alert("Please select a player");
+      return;
+    }
+
+    const penaltyData = {
+      team: teamName,
+      player: selectedPlayer,
+      duration,
+      releasable,
+      infraction,
+    };
+
+    onSubmit(penaltyData);    // ⬅ send penalty data to ActionComponent
+  };
+
   return (
     <>
       <div className="popup-overlay">
         <div className="popup">
-          <div className="close-popup">
+
+          {/* Close button */}
+          <div className="close-popup" onClick={onClose}>
             <img src={crossCircle} alt="Close" />
           </div>
 
           <h3>Add Penalty – {teamName}</h3>
 
           <div className="penalty-wrap">
+
             {/* Player Select */}
             <div className="penalty-input-wrap">
               <label>Player Number</label>
               <div className="player-select">
                 <button onClick={() => setShowPlayerList(true)}>
-                  {selectedPlayer !== null
-                    ? `#${selectedPlayer}`
-                    : "Select Player"}
+                  {selectedPlayer !== null ? `#${selectedPlayer}` : "Select Player"}
                 </button>
               </div>
             </div>
@@ -72,19 +97,26 @@ const PenaltyPopupComponent: React.FC<PenaltyPopupProps> = ({ teamName }) => {
             {/* Infraction */}
             <div className="penalty-input-wrap">
               <label>Infraction</label>
-              <select>
+              <select
+                value={infraction}
+                onChange={(e) => setInfraction(e.target.value)}
+              >
                 <option value="slashing">Slashing</option>
                 <option value="holding">Holding</option>
                 <option value="pushing">Pushing</option>
-                <option value="illegal-body-check">
-                  Illegal Body Check
-                </option>
+                <option value="illegal-body-check">Illegal Body Check</option>
                 <option value="interference">Interference</option>
                 <option value="cross-check">Cross-Check</option>
                 <option value="yellow card">Yellow Card</option>
                 <option value="red card">Red Card</option>
               </select>
             </div>
+
+            {/* Submit Button */}
+            <button className="btn btn-primary" onClick={submitPenalty}>
+              Add Penalty
+            </button>
+
           </div>
         </div>
       </div>

@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import ActivePenalties from "../components/ActivePenalties";
-import GameStatisticsScoreKeeper from "../components/GameStatisticsScoreKeeper";
-import LiveStatsTracker from "../components/LiveStatsTracker";
 import ScoreKeeperComponent from "../components/ScoreKeeperComponent";
-import AccArrow from "../assets/images/down-arrow-blue.svg";
+import playbtn from "../assets/images/play-icon.svg";
+import pausebtn from "../assets/images/pause-icon.svg";
 import loader from "../assets/images/loader.svg";
 import { getGame, verifyScoreKeeperCode } from "../service/api.service";
 import useSocket from "../utils/sockect";
@@ -15,18 +13,7 @@ export default function ScoreKeeper() {
   const [searchParams] = useSearchParams();
   const [game, setGame] = useState<any>(null);
   const [gameStatistics, setGameStatistics] = useState<any>(null);
-  const [submittingGoal, setSubmittingGoal] = useState(false);
-  const [submittingPenalty, setSubmittingPenalty] = useState(false);
   // Form state
-  const [goalTeam, setGoalTeam] = useState("home");
-  const [goalPlayer, setGoalPlayer] = useState("");
-  const [goalMinute, setGoalMinute] = useState("");
-  const [goalSecond, setGoalSecond] = useState("");
-  const [penaltyTeam, setPenaltyTeam] = useState("home");
-  const [penaltyPlayer, setPenaltyPlayer] = useState("");
-  const [penaltyMinutes, setPenaltyMinutes] = useState("");
-  const [penaltySeconds, setPenaltySeconds] = useState("");
-  const [penaltyType, setPenaltyType] = useState("releasable");
   const [loading, setLoading] = useState(false);
   const [endGame,setEndGame] =useState(false);
   // URL param
@@ -81,74 +68,15 @@ export default function ScoreKeeper() {
   // Setup socket
   const { emit } = useSocket(gameId, {
     gameEnded: (_) => {
-      console.log(1);
       setEndGame(true)
     },
     clockUpdated: (clock: any) => {
       setGameStatistics((prev: any) => ({ ...prev, clock }));
     },
-    gameReset: (stats: any) => {
-      setGameStatistics(stats);
-    },
-    penaltyRemoved: (stats: any) => {
-      setGameStatistics(stats);
-    },
-    penaltyAdded: (stats: any) => {
+    statUpdated: (stats: any) => {
       setGameStatistics(stats);
     },
   });
-
-
-  // Dynamic Add Goal
-  const handleAddGoal = () => {
-    if (submittingGoal) return; // ⛔ prevent double-clicks
-    if (!goalPlayer || !goalMinute) return alert("Please select player and minute");
-
-    setSubmittingGoal(true); // 🔒 lock button
-
-    const payload = {
-      gameId,
-      team: goalTeam,
-      playerNo: parseInt(goalPlayer),
-      minute: parseInt(goalMinute),
-      second:parseInt(goalSecond)
-    };
-
-    emit("addGoal", payload);
-    setGameStatistics((prev: any) => ({
-      ...prev,
-      goals: [...(prev?.goals || []), payload],
-    }));
-    setGoalPlayer("");
-    setGoalSecond("");
-    setGoalMinute("");
-    // ✅ unlock after short delay (or after socket ack if you add it)
-    setTimeout(() => setSubmittingGoal(false), 1000);
-  };
-
-  // Dynamic Add Penalty
-  const handleAddPenalty = () => {
-    if (submittingPenalty) return; // ⛔ prevent double-clicks
-    if (!penaltyPlayer || !penaltyMinutes || !penaltySeconds)
-      return alert("Please fill all penalty fields");
-
-    setSubmittingPenalty(true); // 🔒 lock button
-    const payload = {
-      gameId,
-      team: penaltyTeam,
-      type: penaltyType,
-      playerNo: parseInt(penaltyPlayer),
-      minutes: parseInt(penaltyMinutes),
-      seconds: parseInt(penaltySeconds),
-    };
-
-    emit("addPenalty", payload);
-    setPenaltyPlayer("");
-    setPenaltyMinutes("");
-    setPenaltySeconds("");
-    setTimeout(() => setSubmittingPenalty(false), 1000);
-  };
-
 
   if (loading) {
         return (
@@ -193,20 +121,28 @@ export default function ScoreKeeper() {
         <div className="container">
           <div className="score-top pd cmn-box pt-30">
             <div className="text-center hdr">
-              <h1>Score Keeper</h1>
+              <div className="clock-wrap">
+                  <img src={playbtn} />
+                  <div className="timer">
+                    <span>12:00</span>
+                  </div>
+              </div>
             </div>
             <ScoreKeeperComponent gameStatistics={gameStatistics} game={game} />
           </div>
           <div className="actions-outer-wrap">
               <div className="action-inner">
-                <ActionComponent gameStatistics={gameStatistics} game={game} teamName="home"/>
-                <ActionComponent gameStatistics={gameStatistics} game={game} teamName="away"/>
+                <ActionComponent  game={game} teamName="home" socketEmit={emit}/>
+                <ActionComponent  game={game} teamName="away" socketEmit={emit}/>
               </div>
           </div>
           <div className="eventlist-outer-wrap">
             <RecentActivities  gameStatistics={gameStatistics} game={game} />
           </div>
-
+          <div className="score-board-footer">
+              <button>Set Quarter</button>
+              <button>End Game</button>
+          </div>
           </div>
         </section>
     </div>
