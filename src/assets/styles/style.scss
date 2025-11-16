@@ -424,7 +424,7 @@ div:where(.swal2-container) h2:where(.swal2-title) {
     display: flex;
     align-items: center;
     justify-content: center;
-
+    padding: 0 15px;
     .popup {
         max-width: 600px;
         margin: 20px auto;
@@ -438,6 +438,7 @@ div:where(.swal2-container) h2:where(.swal2-title) {
 
         h3 {
             margin-bottom: 20px;
+            text-align: center;
         }
 
         input,
@@ -472,7 +473,7 @@ div:where(.swal2-container) h2:where(.swal2-title) {
             margin: -5px;
 
             .player-item {
-                width: calc(100% / 4);
+                width: calc(100% / 6);
                 padding: 5px;
                 cursor: pointer;
             }
@@ -482,7 +483,11 @@ div:where(.swal2-container) h2:where(.swal2-title) {
     .add-penalty {
         width: 100%;
     }
-
+    .penalty-input-wrap.switch {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    }
     .penalty-input-wrap {
         margin-bottom: 20px;
 
@@ -494,15 +499,18 @@ div:where(.swal2-container) h2:where(.swal2-title) {
 
         .btn {
             &.btn-primary {
-                background: #3B82F6;
+                background: transparent;
                 width: 100%;
+                border: 1px solid #374151;
             }
         }
 
         .duration-number {
             margin-top: 10px;
             display: block;
-            color: #F97316;
+            text-align: center;
+            font-weight: 600;
+            font-size: 24px;
         }
 
         .duration-wrap {
@@ -515,6 +523,7 @@ div:where(.swal2-container) h2:where(.swal2-title) {
                 color: #fff;
                 padding: 10px 30px;
                 border-radius: 10px;
+                width: 100%;
             }
         }
     }
@@ -567,7 +576,7 @@ div:where(.swal2-container) h2:where(.swal2-title) {
 
     /* checked state */
     .switch input:checked+.slider {
-        background-color: #3B82F6;
+        background-color: #F97316;
         /* green */
     }
 
@@ -577,7 +586,17 @@ div:where(.swal2-container) h2:where(.swal2-title) {
 }
 
 .player-item-innr {
-    background: #374151;
+    border: 1px solid #3B82F6;
+    padding: 20px;
+    border-radius: 5px;
+    font-weight: 600;
+    transition: all 0.5s;
+    &:hover {
+        background: #3B82F6;
+    }
+}
+.score-board-sec .score-top::after {
+    display: none;
 }
 
 .g-5,
@@ -643,6 +662,21 @@ div:where(.swal2-container) h2:where(.swal2-title) {
   .score-board-footer .score-board-footer .btn {
     min-width: 200px;
   }
+  .popup-overlay .penalty-input-wrap .duration-wrap button {
+  padding: 10px 20px;
+}
+.popup-overlay .penalty-input-wrap .duration-wrap {
+  gap: 8px;
+}
+.popup-overlay .popup .player-list .player-item {
+    width: calc(100% / 5);
+}
+.player-item-innr {
+    padding: 10px;
+}
+.popup-overlay .popup {
+    padding: 20px;
+}
 }
 @media (max-width: 575px) {
     .score-board-footer .score-board-footer {
@@ -655,4 +689,5 @@ div:where(.swal2-container) h2:where(.swal2-title) {
   .footer {
   padding: 50px 0 188px;
 }
+
 }
