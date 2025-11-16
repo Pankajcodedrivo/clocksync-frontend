@@ -1,7 +1,7 @@
 import AppRoutes from './routes/AppRoutes'
 import Header from './components/Header'
 import Footer from './components/Footer'
-import bgImage from './assets/images/background-score-keeper.jpg'
+import bgImage from './assets/images/background-2.jpg'
 import './App.css'
 import { useEffect, useState } from 'react'
 import { getSettings } from './service/api.service'

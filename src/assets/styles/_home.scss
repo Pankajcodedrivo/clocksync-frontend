@@ -34,13 +34,13 @@
   }
 
   .score-keeper {
-    .score-card-innr {
-      @media only screen and (max-width: 767px) {
-        &:nth-child(2) {
-          margin-bottom: 115px;
-        }
-      }
-    }
+    // .score-card-innr {
+    //   @media only screen and (max-width: 767px) {
+    //     &:nth-child(2) {
+    //       margin-bottom: 115px;
+    //     }
+    //   }
+    // }
   }
 
   .score-card-innr {
@@ -52,17 +52,17 @@
       }
     }
 
-    &:nth-child(2) {
-      margin-left: -40px;
-      margin-right: -40px;
-      position: relative;
-      z-index: 1;
+    // &:nth-child(2) {
+    //   margin-left: -40px;
+    //   margin-right: -40px;
+    //   position: relative;
+    //   z-index: 1;
 
-      @media only screen and (max-width: 991px) {
-        margin-left: -25px;
-        margin-right: -25px;
-      }
-    }
+    //   @media only screen and (max-width: 991px) {
+    //     margin-left: -25px;
+    //     margin-right: -25px;
+    //   }
+    // }
   }
 
   .left,
@@ -102,7 +102,7 @@
     }
 
     @media only screen and (max-width: 767px) {
-      margin-bottom: 80px;
+      margin-bottom: 90px;
     }
 
     h1 {
@@ -113,10 +113,10 @@
   .score-top {
     position: relative;
     z-index: 1;
-    padding: 0 20px 30px;
+    padding: 0 0 30px;
 
     @media only screen and (max-width: 991px) {
-      padding: 0 0 30px;
+      padding: 0 0 50px;
     }
 
     &.pd {
@@ -171,7 +171,8 @@
     h3 {
       padding-bottom: 10px;
       border-bottom: 1px solid #FFFFFF12;
-      margin: 0 70px 30px;
+      margin: 0 20px 20px;
+      text-transform: capitalize;
     }
 
     .score-content {
@@ -281,7 +282,7 @@
     align-items: center;
     justify-content: center;
     border-radius: 20px;
-    background: $color-2;
+    background:$color-white;
     margin-left: auto;
     margin-right: auto;
     position: absolute;

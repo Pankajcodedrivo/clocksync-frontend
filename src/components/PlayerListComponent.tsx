@@ -39,7 +39,9 @@ const PlayerListComponent: React.FC<PlayerListProps> = ({teamName, onSelectPlaye
                 className="player-item"
                 onClick={() => onSelectPlayer(player)}
               >
-                {player}
+                <div className="player-item-innr">
+                    {player}
+                </div>
               </div>
             ))
           ) : (

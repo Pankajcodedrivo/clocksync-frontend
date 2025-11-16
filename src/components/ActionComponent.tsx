@@ -75,8 +75,10 @@ export default function ActionComponent({ game,teamName, socketEmit }: Props) {
         <div className="event-action-wrap">
             <div className="event-action">
                 <img src={hugeiconsAdd} alt="Add" />
-                <h4>{teamName} Events</h4>
-                <p>Explore, connect, and match with top events.</p>
+                <div>
+                    <h4>{teamName} Events</h4>
+                    <p>Explore, connect, and match with top events.</p>
+                </div>
             </div>
 
             <div className="event-action-btn">
@@ -130,7 +132,10 @@ export default function ActionComponent({ game,teamName, socketEmit }: Props) {
             <button className="btn penalty-btn" onClick={() => setShowPenaltyPopup(true)}>
                 <img src={penaltyIcon} alt="Penalty" /> Penalty
             </button>
-
+            {/* green btn */}
+            {/* <button className="btn penalty-btn green" onClick={() => setShowPenaltyPopup(true)}>
+                <img src={penaltyIcon} alt="Penalty" /> Penalty
+            </button> */}
             {/* Undo */}
             <button className="btn undo-btn" onClick={() => socketEmit("undoAction", {gameId:game._id})}>
                 <img src={primeUndo} alt="Undo" /> Undo

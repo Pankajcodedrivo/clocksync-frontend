@@ -15,7 +15,7 @@ export default function ScoreKeeper() {
   const [gameStatistics, setGameStatistics] = useState<any>(null);
   // Form state
   const [loading, setLoading] = useState(false);
-  const [endGame,setEndGame] =useState(false);
+  const [endGame, setEndGame] = useState(false);
   // URL param
   const urlCode = searchParams.get("code");
   const [accessToken, setAccessToken] = useState(sessionStorage.getItem("access_token") ?? "");
@@ -49,9 +49,9 @@ export default function ScoreKeeper() {
       try {
         setLoading(true);
         const gameData = await getGame(gameId, accessToken);
-        if(gameData?.game?.endGame){
+        if (gameData?.game?.endGame) {
           setEndGame(true);
-        } 
+        }
         setGame(gameData?.game);
         setLoading(false);
         if (gameData?.gameStatistics) setGameStatistics(gameData.gameStatistics);
@@ -79,21 +79,21 @@ export default function ScoreKeeper() {
   });
 
   if (loading) {
-        return (
-          <div className="loader-overlay">
-            <div className="loader">
-              <img src={loader} alt="loader" />
-            </div>
-          </div>
-        
-        );
-    }
+    return (
+      <div className="loader-overlay">
+        <div className="loader">
+          <img src={loader} alt="loader" />
+        </div>
+      </div>
+
+    );
+  }
   if (endGame) {
     return (
       <div className="wrapper no-data">
         <section className="score-board-sec">
           <div className="container small-container">
-            <div className="score-top pd cmn-box pt-30">
+            <div className="score-top">
               <h1>Game is ended.</h1>
             </div>
           </div>
@@ -102,49 +102,58 @@ export default function ScoreKeeper() {
     );
   }
   if (!game) {
-        return (
-        <div className="wrapper no-data">
-            <section className="score-board-sec">
-              <div className="container small-container">
-                  <div className="score-top pd cmn-box pt-30">
-                  <h1>No game data found.</h1>
-                  </div>
-              </div>
-            </section>
-        </div>
-        );
-    } 
+    return (
+      <div className="wrapper no-data">
+        <section className="score-board-sec">
+          <div className="container small-container">
+            <div className="score-top">
+              <h1>No game data found.</h1>
+            </div>
+          </div>
+        </section>
+      </div>
+    );
+  }
 
   return (
     <div className="wrapper">
       <section className="score-board-sec">
         <div className="container">
-          <div className="score-top pd cmn-box pt-30">
+          <div className="score-top">
             <div className="text-center hdr">
               <div className="clock-wrap">
-                  <img src={playbtn} />
-                  <div className="timer">
-                    <span>12:00</span>
-                  </div>
+                <img src={playbtn} />
+                <div className="timer">
+                  <span>12:00</span>
+                  <p>Q1</p>
+                </div>
               </div>
             </div>
             <ScoreKeeperComponent gameStatistics={gameStatistics} game={game} />
           </div>
           <div className="actions-outer-wrap">
-              <div className="action-inner">
-                <ActionComponent  game={game} teamName="home" socketEmit={emit}/>
-                <ActionComponent  game={game} teamName="away" socketEmit={emit}/>
+            <div className="action-inner row g-5">
+              <div className="col-md-6">
+                <ActionComponent game={game} teamName="home" socketEmit={emit} />
               </div>
+              <div className="col-md-6">
+                <ActionComponent game={game} teamName="away" socketEmit={emit} />
+              </div>
+            </div>
           </div>
           <div className="eventlist-outer-wrap">
-            <RecentActivities  gameStatistics={gameStatistics} game={game} />
+            <RecentActivities gameStatistics={gameStatistics} game={game} />
           </div>
           <div className="score-board-footer">
-              <button>Set Quarter</button>
-              <button>End Game</button>
+            <div className="container">
+              <div className="score-board-footer">
+                <button className="btn blue-btn">Set Quarter</button>
+                <button className="btn red-btn">End Game</button>
+              </div>
+            </div>
           </div>
-          </div>
-        </section>
+        </div>
+      </section>
     </div>
   );
 }
