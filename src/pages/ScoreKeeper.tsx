@@ -8,11 +8,13 @@ import { getGame, verifyScoreKeeperCode } from "../service/api.service";
 import useSocket from "../utils/sockect";
 import ActionComponent from "../components/ActionComponent";
 import RecentActivities from "../components/RecentActivities";
+import QuarterPopup from "../components/QuarterPopup";
 
 export default function ScoreKeeper() {
   const [searchParams] = useSearchParams();
   const [game, setGame] = useState<any>(null);
   const [gameStatistics, setGameStatistics] = useState<any>(null);
+  const [showQuarterPopup, setShowQuarterPopup] = useState(false);
   // Form state
   const [loading, setLoading] = useState(false);
   const [endGame,setEndGame] =useState(false);
@@ -103,18 +105,17 @@ export default function ScoreKeeper() {
   }
   if (!game) {
         return (
-        <div className="wrapper no-data">
-            <section className="score-board-sec">
-              <div className="container small-container">
-                  <div className="score-top pd cmn-box pt-30">
-                  <h1>No game data found.</h1>
-                  </div>
-              </div>
-            </section>
-        </div>
+          <div className="wrapper no-data">
+              <section className="score-board-sec">
+                <div className="container small-container">
+                    <div className="score-top pd cmn-box pt-30">
+                      <h1>No game data found.</h1>
+                    </div>
+                </div>
+              </section>
+          </div>
         );
-    } 
-
+  } 
   return (
     <div className="wrapper">
       <section className="score-board-sec">
@@ -122,7 +123,7 @@ export default function ScoreKeeper() {
           <div className="score-top pd cmn-box pt-30">
             <div className="text-center hdr">
               <div className="clock-wrap">
-                  <img src={playbtn} />
+                  <img src={gameStatistics.running ? pausebtn : playbtn} alt={gameStatistics.running ? "pause" : "play"} />
                   <div className="timer">
                     <span>12:00</span>
                   </div>
@@ -132,19 +133,22 @@ export default function ScoreKeeper() {
           </div>
           <div className="actions-outer-wrap">
               <div className="action-inner">
-                <ActionComponent  game={game} teamName="home" socketEmit={emit}/>
-                <ActionComponent  game={game} teamName="away" socketEmit={emit}/>
+                <ActionComponent game={game} teamName="home" socketEmit={emit}/>
+                <ActionComponent game={game} teamName="away" socketEmit={emit}/>
               </div>
           </div>
           <div className="eventlist-outer-wrap">
-            <RecentActivities  gameStatistics={gameStatistics} game={game} />
+            <RecentActivities gameStatistics={gameStatistics} game={game} />
           </div>
           <div className="score-board-footer">
-              <button>Set Quarter</button>
-              <button>End Game</button>
+              <button className="btn btn-primary" onClick={() => setShowQuarterPopup(true)}>Set Quarter & Time</button>
+              <button className="btn btn-secondary">End Game</button>
           </div>
           </div>
         </section>
+        {showQuarterPopup && (
+          <QuarterPopup onclosePopup={() => setShowQuarterPopup(false)} socketEmit={emit} gameId={gameId} />
+        )}
     </div>
   );
 }

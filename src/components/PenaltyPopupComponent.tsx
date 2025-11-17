@@ -123,7 +123,7 @@ const PenaltyPopupComponent: React.FC<PenaltyPopupProps> = ({
 
       {/* Player List Popup */}
       {showPlayerList && (
-        <PlayerListComponent
+        <PlayerListComponent teamName={teamName}
           onSelectPlayer={(num: number | null) => {
             if (num !== null) setSelectedPlayer(num);
             setShowPlayerList(false);
