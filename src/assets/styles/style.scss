@@ -21,7 +21,8 @@ body {
     font-style: normal;
     line-height: 1.6;
     color: $color-white;
-   @media only screen and (max-width: 1499px) {
+
+    @media only screen and (max-width: 1499px) {
         font-size: 14px;
     }
 }
@@ -73,12 +74,15 @@ img {
 h1 {
     font-size: 48px;
     font-weight: 500;
+
     @media only screen and (max-width: 1499px) {
         font-size: 41px;
     }
+
     @media only screen and (max-width: 1199px) {
         font-size: 36px;
     }
+
     @media only screen and (max-width: 767px) {
         font-size: 30px;
     }
@@ -87,12 +91,15 @@ h1 {
 h2 {
     font-size: 48px;
     font-weight: 500;
+
     @media only screen and (max-width: 1499px) {
         font-size: 41px;
     }
+
     @media only screen and (max-width: 1199px) {
         font-size: 36px;
     }
+
     @media only screen and (max-width: 767px) {
         font-size: 30px;
     }
@@ -123,44 +130,53 @@ input.form-control:focus {
     box-shadow: none;
     border-color: $color-blue;
 }
+
 .mainClass {
     height: 100vh;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;      /* full window height */
+    justify-content: space-between;
+    /* full window height */
 }
+
 .wrapper.no-data {
-  display: flex;
-  justify-content: center;
-  align-items: center;      /* avoid cutting on small screens */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* avoid cutting on small screens */
 }
 
 /* Fullscreen overlay */
 .loader-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  backdrop-filter: blur(8px); /* background blur */
-  background: rgba(0, 0, 0, 0.3); /* optional dim overlay */
-  z-index: 9999;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(8px);
+    /* background blur */
+    background: rgba(0, 0, 0, 0.3);
+    /* optional dim overlay */
+    z-index: 9999;
 }
 
 /* Loader image */
 .loader img {
-  width: 80px;  /* adjust size */
-  height: 80px;
-  animation: spin 1.5s linear infinite;
-  filter: invert(43%) sepia(93%) saturate(1538%) hue-rotate(203deg) brightness(94%) contrast(92%);
+    width: 80px;
+    /* adjust size */
+    height: 80px;
+    animation: spin 1.5s linear infinite;
+    filter: invert(43%) sepia(93%) saturate(1538%) hue-rotate(203deg) brightness(94%) contrast(92%);
 }
+
 .swal2-toast h2:where(.swal2-title) {
     font-weight: 300;
 }
+
 div:where(.swal2-container).swal2-center>.swal2-popup {
     background: #212529;
     color: #fff;
@@ -170,23 +186,34 @@ div:where(.swal2-container) h2:where(.swal2-title) {
     font-size: 28px !important;
     font-weight: 200 !important;
 }
+
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
+
 .container.small-container {
     @media only screen and (min-width: 1200px) {
-        max-width:960px;
+        max-width: 960px;
     }
+
     @media only screen and (min-width: 1360px) {
-        max-width:1050px;
+        max-width: 1050px;
     }
+
     @media only screen and (min-width: 1500px) {
         max-width: 1140px;
     }
+
     @media only screen and (max-width: 767px) {
         padding: 0 20px;
     }
+
     @media only screen and (max-width: 360px) {
         padding: 0 12px;
     }
@@ -198,9 +225,11 @@ div:where(.swal2-container) h2:where(.swal2-title) {
     // background-attachment: fixed;
     // background-position: center;
 }
-.full-width{
+
+.full-width {
     width: 100%;
 }
+
 .btn {
     border-radius: 5px;
     padding: 13px 25px;
@@ -231,7 +260,8 @@ div:where(.swal2-container) h2:where(.swal2-title) {
         }
     }
 }
-.add-otr .add-img  a{
+
+.add-otr .add-img a {
     position: relative;
     z-index: 10;
     display: inline-block;
@@ -244,13 +274,31 @@ div:where(.swal2-container) h2:where(.swal2-title) {
     padding: 10px;
     position: relative;
     z-index: 1;
+
     &.p-36 {
         padding-top: 36px;
         padding-bottom: 36px;
     }
 }
-.penalty-wrap{
+
+.penalty-wrap {
     overflow: auto;
+
+    &.flex {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        padding: 0 75px;
+    }
+}
+
+.popup-overlay .popup .timepopup {
+    padding-top: 20px;
+    display: flex;
+    text-align: center;
+    gap: 10px;
+    margin-bottom:20px;
 }
 
 .cmn-box {
@@ -259,12 +307,15 @@ div:where(.swal2-container) h2:where(.swal2-title) {
     padding: 30px 120px;
     margin-bottom: 30px;
     position: relative;
+
     @media only screen and (max-width: 1499px) {
         padding: 30px 70px;
     }
-     @media only screen and (max-width: 1199px) {
+
+    @media only screen and (max-width: 1199px) {
         padding: 30px 12px;
     }
+
     .acc-arrow {
         position: absolute;
         top: 30px;
@@ -281,10 +332,12 @@ div:where(.swal2-container) h2:where(.swal2-title) {
         padding: 0;
         padding-left: 1px;
         z-index: 5;
-        &[aria-expanded="true"]{
+
+        &[aria-expanded="true"] {
             transform: rotate(180deg);
             padding-left: 0;
         }
+
         @media only screen and (max-width: 767px) {
             top: 20px;
             right: 20px;
@@ -294,15 +347,19 @@ div:where(.swal2-container) h2:where(.swal2-title) {
     &.pt-30 {
         padding-top: 30px;
     }
-
+    &.p-30 {
+        padding: 30px;
+    }
     h2 {
         margin-bottom: 30px;
         text-align: center;
         position: relative;
         z-index: 1;
-@media only screen and (max-width: 767px) {
-    margin-bottom: 20px;
-}
+
+        @media only screen and (max-width: 767px) {
+            margin-bottom: 20px;
+        }
+
         &:after {
             position: absolute;
             content: '';
@@ -315,9 +372,10 @@ div:where(.swal2-container) h2:where(.swal2-title) {
             width: 60%;
             height: 80px;
             z-index: -1;
-             @media only screen and (max-width: 767px) {
+
+            @media only screen and (max-width: 767px) {
                 display: none;
-             }
+            }
         }
     }
 }
@@ -325,27 +383,321 @@ div:where(.swal2-container) h2:where(.swal2-title) {
 .action-buttons button {
     margin: 5px;
 }
+
 .action-buttons .btn-secondary {
     background-color: #3B82F6;
 }
+
 .action-buttons .btn-secondary:hover {
     background-color: #F97316;
 }
+
 /* Container positioning for sticky behavior */
 .action-buttons {
-  position: fixed;
-  right: 20px;
-  top: 5%;
-  gap: 10px;
-  z-index: 99999;
+    position: fixed;
+    right: 20px;
+    top: 5%;
+    gap: 10px;
+    z-index: 99999;
 }
 
 /* Mobile responsive adjustment */
 @media (max-width: 768px) {
-  .action-buttons {
-    top: auto;
-    bottom: 20px;
-    right:24%;
-    transform: translateX(30%);
+    .action-buttons {
+        top: auto;
+        bottom: 20px;
+        right: 24%;
+        transform: translateX(30%);
+    }
+}
+
+@media (min-width: 1400px) {
+    .container {
+        max-width: 1300px;
+    }
+}
+
+@media (min-width: 1700px) {
+    .container {
+        max-width: 1500px;
+    }
+}
+
+.popup-overlay {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    position: fixed;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 15px;
+    .popup {
+        max-width: 600px;
+        margin: 20px auto;
+        background: #0D1831;
+        width: 600px;
+        padding: 30px;
+        border-radius: 10px;
+        position: relative;
+        max-height: calc(100vh - 40px);
+        overflow-y: auto;
+
+        h3 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        input,
+        select {
+            height: 50px;
+            background-color: #0D1831;
+            padding: 5px 15px;
+            border: 1px solid #374151;
+            border-radius: 5px;
+            color: #fff;
+            width: 100%;
+            appearance: none;
+
+            &:focus {
+                box-shadow: none;
+                outline: none;
+            }
+        }
+
+        select {
+            background-image: url('../images/down-arrow.svg');
+            background-repeat: no-repeat;
+            background-size: auto;
+            background-position: right 20px center;
+        }
+
+        .player-list {
+            padding-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            text-align: center;
+            margin: -5px;
+
+            .player-item {
+                width: calc(100% / 6);
+                padding: 5px;
+                cursor: pointer;
+            }
+        }
+    }
+
+    .add-penalty {
+        width: 100%;
+    }
+    .penalty-input-wrap.switch {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    }
+    .penalty-input-wrap {
+        margin-bottom: 20px;
+
+        label {
+            margin-bottom: 10px;
+            font-weight: 600;
+            display: block;
+        }
+
+        .btn {
+            &.btn-primary {
+                background: transparent;
+                width: 100%;
+                border: 1px solid #374151;
+            }
+        }
+
+        .duration-number {
+            margin-top: 10px;
+            display: block;
+            text-align: center;
+            font-weight: 600;
+            font-size: 24px;
+        }
+
+        .duration-wrap {
+            display: flex;
+            gap: 15px;
+
+            button {
+                border: 0;
+                background: #374151;
+                color: #fff;
+                padding: 10px 30px;
+                border-radius: 10px;
+                width: 100%;
+            }
+        }
+    }
+
+    .close-popup {
+        position: absolute;
+        right: 20px;
+        top: 20px;
+        cursor: pointer;
+    }
+
+    .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 26px;
+    }
+
+    .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    /* background track */
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #374151;
+        transition: 0.4s;
+        border-radius: 34px;
+    }
+
+    /* knob */
+    .slider::before {
+        content: "";
+        position: absolute;
+        height: 20px;
+        width: 20px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: 0.4s;
+        border-radius: 50%;
+    }
+
+    /* checked state */
+    .switch input:checked+.slider {
+        background-color: #F97316;
+        /* green */
+    }
+
+    .switch input:checked+.slider::before {
+        transform: translateX(24px);
+    }
+}
+
+.player-item-innr {
+    border: 1px solid #3B82F6;
+    padding: 20px;
+    border-radius: 5px;
+    font-weight: 600;
+    transition: all 0.5s;
+    &:hover {
+        background: #3B82F6;
+    }
+}
+.score-board-sec .score-top::after {
+    display: none;
+}
+
+.g-5,
+.gy-5 {
+    --bs-gutter-y: 3rem;
+
+    @media (max-width: 1199px) {
+        --bs-gutter-y: 1.5rem;
+    }
+}
+
+.g-5,
+.gx-5 {
+    --bs-gutter-x: 3rem;
+
+    @media (max-width: 1199px) {
+        --bs-gutter-x: 1.5rem;
+    }
+}
+
+@media (max-width: 1199px) {
+
+    .box-table,
+    .penalty-wrap.flex {
+        padding: 0 10px;
+    }
+
+    .box-table li strong {
+        font-size: 14px;
+    }
+
+    .box-table li span {
+        font-size: 18px;
+    }
+
+    .score-board-footer .score-board-footer .btn {
+        min-width: 300px;
+    }
+
+    .score-board-footer .score-board-footer {
+        gap: 20px;
+    }
+
+}
+
+@media (max-width: 767px) {
+    .event-action-btn .btn {
+        padding: 10px 14px;
+    }
+
+    .event-action-btn {
+        justify-content: center;
+    }
+    .recent-activities-list .recent-activities-list-item {
+  padding: 15px 10px;
+    }
+    .recent-activities-list .recent-activities-list-item .left-part,.recent-activities-list .recent-activities-list-item .left-part .player-number,.recent-activities-list .recent-activities-list-item .right-part {
+  gap: 10px;
+}
+.recent-activities-list {
+  padding: 10px;
+}
+  .score-board-footer .score-board-footer .btn {
+    min-width: 200px;
   }
+  .popup-overlay .penalty-input-wrap .duration-wrap button {
+  padding: 10px 20px;
+}
+.popup-overlay .penalty-input-wrap .duration-wrap {
+  gap: 8px;
+}
+.popup-overlay .popup .player-list .player-item {
+    width: calc(100% / 5);
+}
+.player-item-innr {
+    padding: 10px;
+}
+.popup-overlay .popup {
+    padding: 20px;
+}
+}
+@media (max-width: 575px) {
+    .score-board-footer .score-board-footer {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .score-board-footer .score-board-footer .btn {
+    min-width: 100%;
+  }
+  .footer {
+  padding: 50px 0 188px;
+}
+
 }

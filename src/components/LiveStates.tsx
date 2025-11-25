@@ -2,39 +2,30 @@ import { useState } from "react";
 import goal from "../assets/images/goal.svg";
 import penalty from "../assets/images/penalty.svg";
 
-interface Goal {
-  team: "Home" | "Away";
-  playerNo: number;
-  minute: number;
-}
-
-interface Penalty {
-  team: "Home" | "Away";
-  type: string; // "illegal" | "legal"
-  playerNo: number;
-  minutes: number;
-  seconds: number;
-}
-
 interface AddProps {
-  title: "home" | "away";
-  goals?: Goal[];
-  penalties?: Penalty[];
-  name:any
+  title: "home" | "away";       // which team this card represents
+  actions?: any[];              // ALL game actions passed down
+  name: any;                    // team name
 }
 
 export default function LiveStatsTracker({
   title,
-  goals = [],
-  penalties = [],
+  actions = [],
   name,
 }: AddProps) {
   const [activeTab, setActiveTab] = useState<"goal" | "penalty">("goal");
 
-  // filter only this team's events
-  const teamGoals = goals.filter((g) => g.team.toLowerCase() === title);
-  const teamPenalties = penalties.filter((p) => p.team.toLowerCase() === title);
+  // Filter actions for THIS team
+  const teamActions = actions.filter(
+    (a: any) => a.team?.toLowerCase() === title
+  );
+  // Extract only goals for this team
+  const teamGoals = [...teamActions.filter((a: any) => a.type === "goal")].reverse();
 
+  // Extract only penalties for this team
+  const teamPenalties = [...teamActions.filter((a: any) => a.type === "penalty")].reverse();
+
+  // Which list to show
   const events = activeTab === "goal" ? teamGoals : teamPenalties;
 
   return (
@@ -50,7 +41,7 @@ export default function LiveStatsTracker({
           Goal
         </div>
 
-        <h6>{name?name.toUpperCase():""}</h6>
+        <h6>{name ? name.toUpperCase() : ""}</h6>
 
         <div
           className={`btn btn-primary ${activeTab === "penalty" ? "active" : ""}`}
@@ -67,13 +58,11 @@ export default function LiveStatsTracker({
         {events.length === 0 ? (
           <li className="no-datatrac">
             <div className="traker-content">
-              <p>
-                {activeTab === "goal" ? "No goals yet" : "No penalties yet"}
-              </p>
+              <p>{activeTab === "goal" ? "No goals yet" : "No penalties yet"}</p>
             </div>
           </li>
         ) : activeTab === "goal" ? (
-          events.map((g:any, i) => (
+          events.map((g: any, i: number) => (
             <li key={i}>
               <div className="traker-icon green">
                 <img src={goal} alt="goal" />
@@ -81,23 +70,27 @@ export default function LiveStatsTracker({
               <div className="traker-content">
                 <h5>Goal by #{g.playerNo}</h5>
                 <p>
-                  {title.toUpperCase()} - {String(g.minute).padStart(2, "0")}:{String(g.second).padStart(2, "0")}
+                  {title.toUpperCase()} -{" "}
+                  {String(g.minute).padStart(2, "0")}:
+                  {String(g.second).padStart(2, "0")}
                 </p>
               </div>
             </li>
           ))
         ) : (
-          events.map((p:any, i) => (
+          events.map((p: any, i: number) => (
             <li key={i}>
               <div className="traker-icon orange">
                 <img src={penalty} alt="penalty" />
               </div>
               <div className="traker-content text-capitalize">
                 <h5>
-                  {p.type} - #{p.playerNo}
+                  {p.penaltyType ?? p.type} - #{p.playerNo}
                 </h5>
                 <p>
-                  {title.toUpperCase()} - {String(p.startMinute).padStart(2, "0")}:{String(p.startSecond).padStart(2, "0")}
+                  {title.toUpperCase()} -{" "}
+                  {String(p.minute).padStart(2, "0")}:
+                  {String(p.second).padStart(2, "0")}
                 </p>
               </div>
             </li>

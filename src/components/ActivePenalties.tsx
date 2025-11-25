@@ -1,19 +1,18 @@
 interface ActivePenaltiesProps {
   gameStatistics: any;
   game: any;
-  socketEmit?: (event: string, payload: any) => void;
 }
 
 export default function ActivePenalties({
   gameStatistics,
-  game,
-  socketEmit
+  game
 }: ActivePenaltiesProps) {
-  const penalties = gameStatistics?.penalties ?? [];
-  const handleRemovePenalty = (penaltyId: string) => {
-    // Notify server
-    socketEmit?.("removePenalty", { gameId: game?._id, penaltyId });
-  };
+
+  // Pull penalties from actions instead of gameStatistics.penalties
+  const penalties =
+    (structuredClone(gameStatistics?.actions ?? [])
+      .filter((a: any) => a.type === "penalty")
+      .reverse()) ?? [];
 
   if (penalties.length === 0) {
     return (
@@ -21,7 +20,7 @@ export default function ActivePenalties({
         <table className="table">
           <tbody>
             <tr>
-              <td colSpan={5} className="text-center">
+              <td colSpan={6} className="text-center">
                 No active penalties
               </td>
             </tr>
@@ -39,61 +38,55 @@ export default function ActivePenalties({
             <th>Team</th>
             <th>Type</th>
             <th>Player No</th>
-            <th>Time</th>
+            <th>Infraction</th>
             <th>Start</th>
             <th>End</th>
-             {socketEmit && <th>Action</th>}
           </tr>
         </thead>
+
         <tbody>
-          {penalties.map((penalty: any, index: number) => {
+          {penalties.map((p: any, index: number) => {
             const teamName =
-              penalty.team === "home" ? game?.homeTeamName : game?.awayTeamName;
-              let totalStartSeconds = penalty.startMinute * 60 + penalty.startSecond;
-              let totalPenaltySeconds = penalty.minutes * 60 + penalty.seconds;
-              let endTime = totalStartSeconds - totalPenaltySeconds;
+              p.team === "home"
+                ? game?.homeTeamName
+                : game?.awayTeamName;
 
-              if (endTime < 0) endTime = 0; // clamp so it doesn’t go negative
+            // Duration comes from penalty event fields
+            const durationSeconds = p.penaltyMinutes * 60 + p.penaltySeconds;
 
-              const endMinute = Math.floor(endTime / 60);
-              const endSecond = endTime % 60; 
+            // Start from game's clock at event time
+            const startSeconds = p.minute * 60 + p.second;
+
+            // End time = start time - duration
+            let endTime = startSeconds - durationSeconds;
+            if (endTime < 0) endTime = 0;
+
+            const endMinute = Math.floor(endTime / 60);
+            const endSecond = endTime % 60;
 
             return (
-              <tr key={penalty?._id ?? index}>
+              <tr key={p._id ?? index}>
                 <td>{teamName}</td>
-                <td className="text-capitalize">{penalty.type}</td>
+                <td className="text-capitalize">{p.penaltyType}</td>
                 <td>
-                  <span className="number">{penalty.playerNo}</span>
+                  <span className="number">{p.playerNo}</span>
+                </td>
+                <td>
+                  <span className="text-capitalize">{p.infraction}</span>
                 </td>
                 <td>
                   <span className="time">
-                    {String(penalty.minutes).padStart(2, "0")} :{" "}
-                    {String(penalty.seconds).padStart(2, "0")}
+                    {String(p.minute).padStart(2, "0")} :{" "}
+                    {String(p.second).padStart(2, "0")}
                   </span>
                 </td>
-                <td>
-                  <span className="time">
-                    {String(penalty.startMinute).padStart(2, "0")} :{" "}
-                    {String(penalty.startSecond).padStart(2, "0")}
-                  </span>
-                </td>
+
                 <td>
                   <span className="time">
                     {String(endMinute).padStart(2, "0")} :{" "}
                     {String(endSecond).padStart(2, "0")}
                   </span>
                 </td>
-                {socketEmit && (
-                  <td>
-                    {penalty?._id && (
-                      <a href="#" className="remove-btn"
-                        onClick={() => handleRemovePenalty(penalty._id)}
-                      >
-                        Remove
-                      </a>
-                    )}
-                  </td>
-                )}
               </tr>
             );
           })}

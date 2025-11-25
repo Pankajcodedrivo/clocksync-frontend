@@ -1,15 +1,19 @@
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ActivePenalties from "../components/ActivePenalties";
 import GameStatistics from "../components/GameStatistics";
 import LiveStatsTracker from "../components/LiveStatsTracker";
 import ScoreBoardComponent from "../components/ScoreBoardComponent";
-import { getGameScoreByID, getVerifiedCaptcha } from "../service/api.service";
+import {  getGameScoreByID, getVerifiedCaptcha } from "../service/api.service";
+import useSocket from "../utils/sockect";
 import Ads from "../components/Ads";
 import loader from "../assets/images/loader.svg";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import ReCAPTCHA from "react-google-recaptcha";
+import twoMinutesSound from "../assets/audio/twoMinutes.mp3";
+import timeUpSound from "../assets/audio/timeUp.mp3";
+import penaltySound from "../assets/audio/penalty.mp3";
 import {
   FaFacebook,
   FaTwitter,
@@ -30,7 +34,7 @@ interface HomeProps {
   settings?: Settings | null;
 }
 
-export default function Game({ settings }: HomeProps) {
+export default function Home({ settings }: HomeProps) {
   const { id } = useParams();
   const [game, setGame] = useState<any>(null);
   const [field, setField] = useState<any>(null);
@@ -38,14 +42,26 @@ export default function Game({ settings }: HomeProps) {
   const [loading, setLoading] = useState(false);
   const [notFound, setNotFound] = useState(false);
   const [message, setMessage] = useState("");
+  const [endGame, setEndGame] = useState(false);
   const [verified, setVerified] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
+  const [playedTwoMin, setPlayedTwoMin] = useState(false);
+  const [playedEnd, setPlayedEnd] = useState(false);
+  const lastTimeRef = useRef<{ minute: number; second: number } | null>(null);
+   const audioTwoMin = useRef<HTMLAudioElement | null>(null);
+  const audioEnd = useRef<HTMLAudioElement | null>(null);
+  const penaltyMusic = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     const isVerified = sessionStorage.getItem("captchaVerified");
     if (isVerified === "true") {
       setVerified(true);
     }
+  }, []);
+  useEffect(() => {
+    audioTwoMin.current = new Audio(twoMinutesSound);
+    audioEnd.current = new Audio(timeUpSound);
+    penaltyMusic.current= new Audio(penaltySound);
   }, []);
 
   const handleCaptcha = async (value: string | null) => {
@@ -74,7 +90,7 @@ export default function Game({ settings }: HomeProps) {
             setNotFound(true);
           } else {
             setField(res?.field);
-            setGame(res?.games);
+            setGame(res?.game);
             setGameStatistics(res?.gameStatistics);
           }
         } catch (err: any) {
@@ -91,30 +107,7 @@ export default function Game({ settings }: HomeProps) {
     }
   }, [id]);
 
-  const adsTime =
-  field && field.adsTime && !isNaN(field.adsTime) && Number(field.adsTime) > 0
-    ? Number(field.adsTime) * 1000
-    : 30000;
-  // ✅ Helper: normalize ads (works with array or single object)
-  const normalizeAds = (ads: any) => {
-    if (!ads) return [];
-    return Array.isArray(ads) ? ads : [ads];
-  };
-
-  // ✅ Helper: get ads with fallback to settings
-  const getAds = (
-    placement: "top" | "right" | "left" | "middle" | "bottom",
-    device: "desktop" | "mobile"
-  ) => {
-    const fieldAds = normalizeAds(field?.ads?.[device]?.[placement]);
-   
-    if (fieldAds.length > 0) return fieldAds;
-
-    const settingAds = normalizeAds(settings?.[device]?.[placement]);
-    return settingAds;
-  };
-
-  // 📤 Share handler
+  // 📤 Social share
   const handleSharePlatform = async (platform: string) => {
     try {
       const BASE_URL = window.location.origin;
@@ -127,34 +120,19 @@ export default function Game({ settings }: HomeProps) {
           window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`, "_blank");
           break;
         case "twitter":
-          window.open(
-            `https://twitter.com/intent/tweet?text=${encodedMessage}&url=${encodedUrl}`,
-            "_blank"
-          );
+          window.open(`https://twitter.com/intent/tweet?text=${encodedMessage}&url=${encodedUrl}`, "_blank");
           break;
         case "whatsapp":
-          window.open(
-            `https://api.whatsapp.com/send?text=${encodedMessage}%20${encodedUrl}`,
-            "_blank"
-          );
+          window.open(`https://api.whatsapp.com/send?text=${encodedMessage}%20${encodedUrl}`, "_blank");
           break;
         case "linkedin":
-          window.open(
-            `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
-            "_blank"
-          );
+          window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`, "_blank");
           break;
         case "telegram":
-          window.open(
-            `https://t.me/share/url?url=${encodedUrl}&text=${encodedMessage}`,
-            "_blank"
-          );
+          window.open(`https://t.me/share/url?url=${encodedUrl}&text=${encodedMessage}`, "_blank");
           break;
         case "reddit":
-          window.open(
-            `https://reddit.com/submit?url=${encodedUrl}&title=${encodedMessage}`,
-            "_blank"
-          );
+          window.open(`https://reddit.com/submit?url=${encodedUrl}&title=${encodedMessage}`, "_blank");
           break;
       }
     } catch (err) {
@@ -164,8 +142,88 @@ export default function Game({ settings }: HomeProps) {
       setShowPopup(false);
     }
   };
+  useSocket(game?._id, {
+    clockUpdated: (clock: any) => {
+      setGameStatistics((prev: any) => ({ ...prev, clock }));
 
-  // ✅ Loader state
+      const minutes = Number(clock?.minutes);
+      const seconds = Number(clock?.seconds);
+
+      // Previous clock stored safely
+      if (!lastTimeRef.current) {
+        lastTimeRef.current = { minute: minutes, second: seconds };
+      }
+      const last = lastTimeRef.current;
+
+      // Save current time for next comparison
+      lastTimeRef.current = { minute: minutes, second: seconds };
+
+      // 1️⃣ Detect quarter change (because clockUpdated includes quarter updates)
+      if (clock?.quarter !== gameStatistics?.clock?.quarter) {
+        setPlayedTwoMin(false);
+        setPlayedEnd(false);
+      }
+      // 2️⃣ Two-minute warning → plays if:
+      // - never played in this quarter
+      // - transitions from ABOVE 2:00 into <= 2:00
+      if (!playedTwoMin) {
+        const nowAtTwoOrLess = minutes < 2 || (minutes === 2 && seconds === 0);
+        const wasAboveTwo = last.minute > 2 || (last.minute === 2 && last.second > 0);
+        if (nowAtTwoOrLess && wasAboveTwo) {
+           audioTwoMin.current?.play().catch(err => console.error(err));
+          setPlayedTwoMin(true);
+        }
+      }
+
+      // 3️⃣ End-of-quarter 0:00 → only when transitioning into 0:00
+      if (!playedEnd) {
+        const nowZero = minutes === 0 && seconds === 0;
+        const wasNotZero = last.minute !== 0 || last.second !== 0;
+
+        if (nowZero && wasNotZero) {
+           audioEnd.current?.play().catch(err => console.error(err));
+          setPlayedEnd(true);
+        }
+      }
+    },
+    gameEnded: () => setEndGame(true),
+    scoreUpdated: (stats: any) => setGameStatistics(stats),
+    statUpdated: (stats: any) => setGameStatistics(stats),
+    actionAdded: (event: any) => {
+      try {
+        // Only play for penalty actions
+        if (event?.type === "penalty") {
+          penaltyMusic.current?.play().catch(err => {
+            console.warn("Penalty audio blocked:", err);
+          });
+        }
+      } catch (err) {
+        console.error("Error handling actionAdded:", err);
+      }
+    }
+  });
+  const adsTime =
+  field && field.adsTime && !isNaN(field.adsTime) && Number(field.adsTime) > 0
+    ? Number(field.adsTime) * 1000
+    : 30000;
+  // ✅ Get ads safely (handles array or single ad, with fallback)
+  const getAds = (
+    placement: "top" | "right" | "left" | "middle" | "bottom",
+    device: "desktop" | "mobile"
+  ) => {
+    const fieldAds = field?.ads?.[device]?.[placement];
+    const settingAds = settings?.[device]?.[placement];
+
+    const normalize = (ads: any) => {
+      if (!ads) return [];
+      return Array.isArray(ads) ? ads : [ads];
+    };
+
+    const ads = normalize(fieldAds);
+    if (ads.length > 0) return ads;
+    return normalize(settingAds);
+  };
+
   if (loading) {
     return (
       <div className="loader-overlay">
@@ -181,8 +239,8 @@ export default function Game({ settings }: HomeProps) {
       <div className="wrapper no-data">
         <section className="score-board-sec">
           <div className="container small-container">
-            <div className="score-top pd cmn-box pt-30">
-              <h1>{message ? message : "Field not found."}</h1>
+            <div className="score-top pd cmn-box p-30">
+              <h1>{message || "Game not found."}</h1>
             </div>
           </div>
         </section>
@@ -195,7 +253,7 @@ export default function Game({ settings }: HomeProps) {
       <div className="wrapper no-data">
         <section className="score-board-sec">
           <div className="container small-container">
-            <div className="score-top pd cmn-box pt-30">
+            <div className="score-top pd cmn-box p-30">
               <h2>Please verify you are human to continue</h2>
               <div style={{ display: "flex", justifyContent: "center" }}>
                 <ReCAPTCHA
@@ -212,7 +270,7 @@ export default function Game({ settings }: HomeProps) {
 
   return (
     <div className="wrapper">
-      {/* Sticky action buttons */}
+      {/* Share Button */}
       <div className="action-buttons">
         <button
           onClick={() => {
@@ -232,6 +290,7 @@ export default function Game({ settings }: HomeProps) {
           Share
         </button>
       </div>
+
       {/* Popup Modal */}
       {showPopup && (
         <div
@@ -280,15 +339,7 @@ export default function Game({ settings }: HomeProps) {
 
             <button
               onClick={() => setShowPopup(false)}
-              style={{
-                marginTop: "15px",
-                backgroundColor: "#3B82F6",
-                color: "#fff",
-                border: "none",
-                padding: "6px 12px",
-                borderRadius: "6px",
-                cursor: "pointer",
-              }}
+              className="btn btn-primary"
             >
               Close
             </button>
@@ -296,21 +347,19 @@ export default function Game({ settings }: HomeProps) {
         </div>
       )}
 
-      {/* Ads + Content */}
+      {/* Page Content */}
       <div className="add-sec">
         <div className="container small-container">
-          {/* Mobile Top */}
           <div className="add-otr d-block d-xl-none">
+            
             <Swiper modules={[Autoplay]} autoplay={{ delay: adsTime, disableOnInteraction: false }} loop slidesPerView={1}>
               {getAds("top", "mobile").map((ad: any, idx: number) => (
                 <SwiperSlide key={idx}>
                   <Ads image={ad.imageUrl || ad.image} link={ad.link} />
                 </SwiperSlide>
               ))}
-            </Swiper>
+            </Swiper> 
           </div>
-
-          {/* Desktop Top */}
           <div className="add-otr d-none d-xl-block">
             <Swiper modules={[Autoplay]} autoplay={{ delay: adsTime, disableOnInteraction: false }} loop slidesPerView={1}>
               {getAds("top", "desktop").map((ad: any, idx: number) => (
@@ -332,15 +381,17 @@ export default function Game({ settings }: HomeProps) {
             <ScoreBoardComponent gameStatistics={gameStatistics} game={game} />
           </div>
 
-          {/* Mobile Middle */}
+          {/* Mobile middle ads */}
           <div className="add-sec text-center p-0 mb-30 d-block d-xl-none">
-            <Swiper modules={[Autoplay]} autoplay={{ delay: adsTime, disableOnInteraction: false }} loop slidesPerView={1}>
-              {getAds("middle", "mobile").map((ad: any, idx: number) => (
-                <SwiperSlide key={idx}>
-                  <Ads image={ad.imageUrl || ad.image} link={ad.link} />
-                </SwiperSlide>
-              ))}
-            </Swiper>
+            <div className="add-otr">
+              <Swiper modules={[Autoplay]} autoplay={{ delay: adsTime, disableOnInteraction: false }} loop slidesPerView={1}>
+                {getAds("middle", "mobile").map((ad: any, idx: number) => (
+                  <SwiperSlide key={idx}>
+                    <Ads image={ad.imageUrl || ad.image} link={ad.link} />
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            </div>
           </div>
 
           <div className="cmn-box">
@@ -353,15 +404,17 @@ export default function Game({ settings }: HomeProps) {
             <GameStatistics gameStatistics={gameStatistics} game={game} />
           </div>
 
-          {/* Mobile Bottom */}
+          {/* Mobile bottom ads */}
           <div className="add-sec text-center p-0 mb-30 d-block d-xl-none">
-            <Swiper modules={[Autoplay]} autoplay={{ delay: adsTime, disableOnInteraction: false }} loop slidesPerView={1}>
-              {getAds("bottom", "mobile").map((ad: any, idx: number) => (
-                <SwiperSlide key={idx}>
-                  <Ads image={ad.imageUrl || ad.image} link={ad.link} />
-                </SwiperSlide>
-              ))}
-            </Swiper>
+            <div className="add-otr">
+              <Swiper modules={[Autoplay]} autoplay={{ delay: adsTime, disableOnInteraction: false }} loop slidesPerView={1}>
+                {getAds("bottom", "mobile").map((ad: any, idx: number) => (
+                  <SwiperSlide key={idx}>
+                    <Ads image={ad.imageUrl || ad.image} link={ad.link} />
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            </div>
           </div>
 
           <div className="cmn-box mb-0">
@@ -370,7 +423,7 @@ export default function Game({ settings }: HomeProps) {
           </div>
         </div>
 
-        {/* Desktop Left */}
+        {/* Desktop left ads */}
         <div className="left d-none d-xl-block">
           <Swiper modules={[Autoplay]} autoplay={{ delay: adsTime, disableOnInteraction: false }} loop slidesPerView={1}>
             {getAds("left", "desktop").map((ad: any, idx: number) => (
@@ -381,7 +434,7 @@ export default function Game({ settings }: HomeProps) {
           </Swiper>
         </div>
 
-        {/* Desktop Right */}
+        {/* Desktop right ads */}
         <div className="right d-none d-xl-block">
           <Swiper modules={[Autoplay]} autoplay={{ delay: adsTime, disableOnInteraction: false }} loop slidesPerView={1}>
             {getAds("right", "desktop").map((ad: any, idx: number) => (

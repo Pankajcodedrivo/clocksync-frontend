@@ -20,7 +20,7 @@ const PlayerListComponent: React.FC<PlayerListProps> = ({teamName, onSelectPlaye
         <div className="close-popup" onClick={() => onSelectPlayer(null)}>
           <img src={crossCircle} alt="Close" />
         </div>
-        <h3>Select Player - {teamName}</h3>
+        <h3>Select Player For {teamName}</h3>
 
         <div className="search-player">
           <input
@@ -39,7 +39,9 @@ const PlayerListComponent: React.FC<PlayerListProps> = ({teamName, onSelectPlaye
                 className="player-item"
                 onClick={() => onSelectPlayer(player)}
               >
-                {player}
+                <div className="player-item-innr">
+                    {player}
+                </div>
               </div>
             ))
           ) : (

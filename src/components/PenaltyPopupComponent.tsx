@@ -64,7 +64,7 @@ const PenaltyPopupComponent: React.FC<PenaltyPopupProps> = ({
             <div className="penalty-input-wrap">
               <label>Player Number</label>
               <div className="player-select">
-                <button onClick={() => setShowPlayerList(true)}>
+                <button className="btn btn-primary" onClick={() => setShowPlayerList(true)}>
                   {selectedPlayer !== null ? `#${selectedPlayer}` : "Select Player"}
                 </button>
               </div>
@@ -78,7 +78,7 @@ const PenaltyPopupComponent: React.FC<PenaltyPopupProps> = ({
                 <button onClick={() => handleAddTime(60)}>+1:00</button>
                 <button onClick={() => handleAddTime(120)}>+2:00</button>
               </div>
-              <span>{formatDuration()}</span>
+              <span className="duration-number">{formatDuration()}</span>
             </div>
 
             {/* Releasable Toggle */}
@@ -113,7 +113,7 @@ const PenaltyPopupComponent: React.FC<PenaltyPopupProps> = ({
             </div>
 
             {/* Submit Button */}
-            <button className="btn btn-primary" onClick={submitPenalty}>
+            <button className="btn btn-primary add-penalty" onClick={submitPenalty}>
               Add Penalty
             </button>
 
@@ -123,7 +123,7 @@ const PenaltyPopupComponent: React.FC<PenaltyPopupProps> = ({
 
       {/* Player List Popup */}
       {showPlayerList && (
-        <PlayerListComponent teamName={teamName}
+        <PlayerListComponent teamName="Penalty"
           onSelectPlayer={(num: number | null) => {
             if (num !== null) setSelectedPlayer(num);
             setShowPlayerList(false);

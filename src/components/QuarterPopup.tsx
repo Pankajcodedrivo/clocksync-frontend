@@ -41,9 +41,6 @@ const QuarterPopup: React.FC<QuarterPopupProps> = ({ onclosePopup, socketEmit, g
         </div>
 
         <h3>Set Quarter & Time</h3>
-
-        {error && <p className="error-msg">{error}</p>}
-
         <div className="search-player">
           <select value={quarter} onChange={(e) => setQuarter(e.target.value)}>
             <option value="">quarter</option>
@@ -54,7 +51,7 @@ const QuarterPopup: React.FC<QuarterPopupProps> = ({ onclosePopup, socketEmit, g
           </select>
         </div>
 
-        <div className="player-list">
+        <div className="timepopup">
           <select value={minutes} onChange={(e) => setMinutes(e.target.value)}>
             {Array.from({ length: 60 }, (_, i) => (
               <option key={i} value={i}>{i} Min</option>
@@ -68,7 +65,7 @@ const QuarterPopup: React.FC<QuarterPopupProps> = ({ onclosePopup, socketEmit, g
           </select>
         </div>
 
-        <button className="btn btn-primary" onClick={handleSetClock}>
+        <button className="btn btn-primary add-penalty" onClick={handleSetClock}>
           Set Quarter & Time
         </button>
       </div>

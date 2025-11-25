@@ -48,15 +48,19 @@ export default function ScoreBoardComponent({ gameStatistics, game }: Props) {
         <div className="score-content">
           <h2 className="score">{score}</h2>
           <ul>
-            {gameStatistics?.goals
-              ?.filter((g: any) => g.team.toLowerCase() === team)
-              .map((g: any, i: number) => (
-                <li key={i}>
-                  {g.minute}’
-                  {g.second ? `${String(g.second).padStart(2, "0")}’’ ` : ""}
-                  #{g.playerNo}
-                </li>
-              ))}
+           {gameStatistics?.actions
+            ?.filter(
+              (g: any) =>
+                g.team.toLowerCase() === team.toLowerCase() &&
+                g.type === "goal"
+            )
+            .map((g: any, i: number) => (
+              <li key={i}>
+                {g.minute}’
+                {g.second ? `${String(g.second).padStart(2, "0")}’’ ` : ""} 
+                #{g.playerNo}
+              </li>
+            ))}
           </ul>
         </div>
       </>

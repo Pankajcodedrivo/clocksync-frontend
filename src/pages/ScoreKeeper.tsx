@@ -9,6 +9,7 @@ import useSocket from "../utils/sockect";
 import ActionComponent from "../components/ActionComponent";
 import RecentActivities from "../components/RecentActivities";
 import QuarterPopup from "../components/QuarterPopup";
+import { showConfirmAlert } from "../utils/toast/toast";
 
 export default function ScoreKeeper() {
   const [searchParams] = useSearchParams();
@@ -17,7 +18,7 @@ export default function ScoreKeeper() {
   const [showQuarterPopup, setShowQuarterPopup] = useState(false);
   // Form state
   const [loading, setLoading] = useState(false);
-  const [endGame,setEndGame] =useState(false);
+  const [endGame, setEndGame] = useState(false);
   // URL param
   const urlCode = searchParams.get("code");
   const [accessToken, setAccessToken] = useState(sessionStorage.getItem("access_token") ?? "");
@@ -51,9 +52,9 @@ export default function ScoreKeeper() {
       try {
         setLoading(true);
         const gameData = await getGame(gameId, accessToken);
-        if(gameData?.game?.endGame){
+        if (gameData?.game?.endGame) {
           setEndGame(true);
-        } 
+        }
         setGame(gameData?.game);
         setLoading(false);
         if (gameData?.gameStatistics) setGameStatistics(gameData.gameStatistics);
@@ -79,23 +80,34 @@ export default function ScoreKeeper() {
       setGameStatistics(stats);
     },
   });
+    // Clock controls
+  const handleToggleTimer = () => {
+    if (gameStatistics.clock.running) {
+      emit("pauseClock", { gameId });
+    } else {
+      emit("startClock", { gameId });
+    }
+  }
+  const formatTime = (m: number, s: number) =>
+    `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+
 
   if (loading) {
-        return (
-          <div className="loader-overlay">
-            <div className="loader">
-              <img src={loader} alt="loader" />
-            </div>
-          </div>
-        
-        );
-    }
+    return (
+      <div className="loader-overlay">
+        <div className="loader">
+          <img src={loader} alt="loader" />
+        </div>
+      </div>
+
+    );
+  }
   if (endGame) {
     return (
       <div className="wrapper no-data">
         <section className="score-board-sec">
           <div className="container small-container">
-            <div className="score-top pd cmn-box pt-30">
+            <div className="score-top">
               <h1>Game is ended.</h1>
             </div>
           </div>
@@ -108,7 +120,7 @@ export default function ScoreKeeper() {
           <div className="wrapper no-data">
               <section className="score-board-sec">
                 <div className="container small-container">
-                    <div className="score-top pd cmn-box pt-30">
+                    <div className="score-top pd cmn-box p-30">
                       <h1>No game data found.</h1>
                     </div>
                 </div>
@@ -116,33 +128,56 @@ export default function ScoreKeeper() {
           </div>
         );
   } 
+
+    const handleEnd = async() => {
+      const confirmEnd = await showConfirmAlert("Are you sure you want to end the game? This cannot be undone.");
+    
+      if (!confirmEnd.isConfirmed) return;
+
+      // 🔹 Emit socket event to end the game
+      emit("gameEnded", { gameId });
+    };
   return (
     <div className="wrapper">
       <section className="score-board-sec">
         <div className="container">
-          <div className="score-top pd cmn-box pt-30">
+          <div className="score-top">
             <div className="text-center hdr">
-              <div className="clock-wrap">
-                  <img src={gameStatistics.running ? pausebtn : playbtn} alt={gameStatistics.running ? "pause" : "play"} />
+              <div className="clock-wrap" >
+                  {(game?.fieldId?.unviseralClock)?
+                    null:
+                    <img onClick={handleToggleTimer} style={{cursor:"pointer"}} src={gameStatistics?.clock?.running ? pausebtn : playbtn} alt={gameStatistics?.clock?.running ? "pause" : "play"} />
+                  }
                   <div className="timer">
-                    <span>12:00</span>
+                    <span>{formatTime(gameStatistics.clock.minutes, gameStatistics.clock.seconds)}</span>
+                     <p>Q{gameStatistics.clock.quarter}</p>
                   </div>
               </div>
             </div>
             <ScoreKeeperComponent gameStatistics={gameStatistics} game={game} />
           </div>
           <div className="actions-outer-wrap">
-              <div className="action-inner">
-                <ActionComponent game={game} teamName="home" socketEmit={emit}/>
-                <ActionComponent game={game} teamName="away" socketEmit={emit}/>
+              <div className="action-inner row g-5">
+                <div className="col-md-6">
+                  <ActionComponent game={game} running={gameStatistics?.clock?.running} teamName="home" socketEmit={emit} />
+                </div>
+                <div className="col-md-6">
+                  <ActionComponent game={game} running={gameStatistics?.clock?.running} teamName="away" socketEmit={emit} />
+                </div>
               </div>
           </div>
           <div className="eventlist-outer-wrap">
-            <RecentActivities gameStatistics={gameStatistics} game={game} />
+            <RecentActivities gameStatistics={gameStatistics} game={game} socketEmit={emit} />
           </div>
           <div className="score-board-footer">
-              <button className="btn btn-primary" onClick={() => setShowQuarterPopup(true)}>Set Quarter & Time</button>
-              <button className="btn btn-secondary">End Game</button>
+            <div className="container">
+              <div className="score-board-footer">
+                {(game?.fieldId?.unviseralClock)? null :
+                  <button className="btn blue-btn" onClick={() => setShowQuarterPopup(true)}>Set Quarter</button>
+                }
+                <button className="btn red-btn" onClick={handleEnd}>End Game</button>
+              </div>
+            </div>
           </div>
           </div>
         </section>

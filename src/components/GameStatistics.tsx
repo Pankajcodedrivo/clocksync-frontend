@@ -3,17 +3,11 @@ interface Props {
   game: any;
 }
 export default function GameStatistics({ gameStatistics,game }: Props) {
-    const homePenalties = gameStatistics?.homeTeam?.stats?.penalties || 0;
-    const awayPenalties = gameStatistics?.awayTeam?.stats?.penalties || 0;
+    const home = gameStatistics?.homeTeam;
+    const away = gameStatistics?.awayTeam;
 
-    const homeShots = gameStatistics?.homeTeam?.stats?.shots || 0;
-    const awayShots = gameStatistics?.awayTeam?.stats?.shots || 0;
-
-    const homeSaves = gameStatistics?.homeTeam?.stats?.saves || 0;
-    const awaySaves = gameStatistics?.awayTeam?.stats?.saves || 0;
-
-    const homeFouls = gameStatistics?.homeTeam?.stats?.fouls || 0;
-    const awayFouls = gameStatistics?.awayTeam?.stats?.fouls || 0;
+    const homeStats = home?.stats || {};
+    const awayStats = away?.stats || {};
     return (
         <div className="cmn-box-wrapper p-36">
             <div className="statictics-wrapper">
@@ -27,7 +21,7 @@ export default function GameStatistics({ gameStatistics,game }: Props) {
                         <div className="count-inn">
                             <h4>GROUND BALLS</h4>
                         </div>
-                        <p className="green lg">{homePenalties} <span>-</span> {awayPenalties}</p>
+                        <p className="green lg">{homeStats.groundBall ?? 0} <span>-</span> {awayStats.groundBall ?? 0}</p>
                     </div>
                     <div className="col-4 statictics-innr">
                         <div className="count-inn">
@@ -41,19 +35,26 @@ export default function GameStatistics({ gameStatistics,game }: Props) {
                     <div className="col-4 statictics-innr">
                         <h4 className="sm">SHOTS</h4>
                         <div className="count-inn gap-10">
-                            <p className="blue sm">{homeShots} <span>-</span> {awayShots}</p>
+                            <p className="blue sm">{homeStats.shotOn ?? 0}/{homeStats.shotOff ?? 0} <span>-</span> {awayStats.shotOn ?? 0}/{awayStats.shotOff ?? 0}</p>
                         </div>
                     </div>
                     <div className="col-4 statictics-innr">
                         <h4 className="sm">SAVES</h4>
                         <div className="count-inn gap-10">
-                            <p className="green sm">{homeSaves} <span>-</span> {awaySaves}</p>
+                            <p className="green sm">{homeStats.save ?? homeStats.save ?? 0} <span>-</span> {awayStats.save ?? awayStats.save ?? 0}</p>
                         </div>
                     </div>
-                    <div className="col-4 statictics-innr">
-                        <h4 className="sm">FACE OFF</h4>
+                    {/*<div className="col-3 statictics-innr">
+                        <h4 className="sm">Draws</h4>
                         <div className="count-inn gap-10">
-                            <p className="orange sm"> {homeFouls} <span>-</span> {awayFouls}</p>
+                            <p className="orange sm"> {homeStats.drawW ?? 0}/{homeStats.drawL ?? 0} <span>-</span> {awayStats.drawW ?? 0}/{awayStats.drawL ?? 0}</p>
+                        </div>
+                    </div>
+                    */}
+                    <div className="col-4 statictics-innr">
+                        <h4 className="sm">TO</h4>
+                        <div className="count-inn gap-10">
+                            <p className="blue sm">{homeStats.turnoverForced ?? 0}/{homeStats.turnoverUnforced ?? 0} <span>-</span> {awayStats.turnoverForced ?? 0}/{awayStats.turnoverUnforced ?? 0}</p>
                         </div>
                     </div>
                 </div>

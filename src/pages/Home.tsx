@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ActivePenalties from "../components/ActivePenalties";
 import GameStatistics from "../components/GameStatistics";
 import LiveStatsTracker from "../components/LiveStatsTracker";
@@ -11,6 +11,9 @@ import loader from "../assets/images/loader.svg";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import ReCAPTCHA from "react-google-recaptcha";
+import twoMinutesSound from "../assets/audio/twoMinutes.mp3";
+import timeUpSound from "../assets/audio/timeUp.mp3";
+import penaltySound from "../assets/audio/penalty.mp3";
 import {
   FaFacebook,
   FaTwitter,
@@ -42,12 +45,24 @@ export default function Home({ settings }: HomeProps) {
   const [endGame, setEndGame] = useState(false);
   const [verified, setVerified] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
-
+  const [playedTwoMin, setPlayedTwoMin] = useState(false);
+  const [playedEnd, setPlayedEnd] = useState(false);
+  const lastTimeRef = useRef<{ minute: number; second: number } | null>(null);
+  const audioTwoMin = useRef<HTMLAudioElement | null>(null);
+  const audioEnd = useRef<HTMLAudioElement | null>(null);
+  const penaltyMusic = useRef<HTMLAudioElement | null>(null);
+  
   useEffect(() => {
     const isVerified = sessionStorage.getItem("captchaVerified");
     if (isVerified === "true") {
       setVerified(true);
     }
+  }, []);
+
+  useEffect(() => {
+    audioTwoMin.current = new Audio(twoMinutesSound);
+    audioEnd.current = new Audio(timeUpSound);
+    penaltyMusic.current= new Audio(penaltySound);
   }, []);
 
   const handleCaptcha = async (value: string | null) => {
@@ -132,20 +147,63 @@ export default function Home({ settings }: HomeProps) {
   useSocket(game?._id, {
     clockUpdated: (clock: any) => {
       setGameStatistics((prev: any) => ({ ...prev, clock }));
-    },
-    setQuater: (stats: any) => {
-      setGameStatistics((prev: any) => ({
-        ...prev,
-        clock: { ...prev.clock, quarter: stats.clock.quarter },
-      }));
+
+      const minutes = Number(clock?.minutes);
+      const seconds = Number(clock?.seconds);
+
+      // Previous clock stored safely
+      if (!lastTimeRef.current) {
+        lastTimeRef.current = { minute: minutes, second: seconds };
+      }
+      const last = lastTimeRef.current;
+
+      // Save current time for next comparison
+      lastTimeRef.current = { minute: minutes, second: seconds };
+
+      // 1️⃣ Detect quarter change (because clockUpdated includes quarter updates)
+      if (clock?.quarter !== gameStatistics?.clock?.quarter) {
+        setPlayedTwoMin(false);
+        setPlayedEnd(false);
+      }
+      // 2️⃣ Two-minute warning → plays if:
+      // - never played in this quarter
+      // - transitions from ABOVE 2:00 into <= 2:00
+      if (!playedTwoMin) {
+        const nowAtTwoOrLess = minutes < 2 || (minutes === 2 && seconds === 0);
+        const wasAboveTwo = last.minute > 2 || (last.minute === 2 && last.second > 0);
+        if (nowAtTwoOrLess && wasAboveTwo) {
+          audioTwoMin.current?.play().catch(err => console.error(err));
+          setPlayedTwoMin(true);
+        }
+      }
+
+      // 3️⃣ End-of-quarter 0:00 → only when transitioning into 0:00
+      if (!playedEnd) {
+        const nowZero = minutes === 0 && seconds === 0;
+        const wasNotZero = last.minute !== 0 || last.second !== 0;
+
+        if (nowZero && wasNotZero) {
+          audioEnd.current?.play().catch(err => console.error(err));
+          setPlayedEnd(true);
+        }
+      }
     },
     gameEnded: () => setEndGame(true),
     scoreUpdated: (stats: any) => setGameStatistics(stats),
-    penaltyRemoved: (stats: any) => setGameStatistics(stats),
     statUpdated: (stats: any) => setGameStatistics(stats),
-    goalAdded: (stats: any) => setGameStatistics(stats),
-    penaltyAdded: (stats: any) => setGameStatistics(stats),
-    gameReset: (stats: any) => setGameStatistics(stats),
+     // actionAdded event contains the raw action payload (emitted by server)
+    actionAdded: (event: any) => {
+      try {
+        // Only play for penalty actions
+        if (event?.type === "penalty") {
+          penaltyMusic.current?.play().catch(err => {
+             console.warn("Penalty audio blocked:", err);
+          });
+        }
+      } catch (err) {
+        console.error("Error handling actionAdded:", err);
+      }
+    }
   });
   const adsTime =
   field && field.adsTime && !isNaN(field.adsTime) && Number(field.adsTime) > 0
@@ -182,9 +240,21 @@ export default function Home({ settings }: HomeProps) {
   if (endGame) {
     return (
       <div className="wrapper no-data">
+        <div className="action-buttons">
+        <button
+          onClick={() => {
+            if (field?.slug) {
+              window.location.href = `/${field.slug}`; // Hard reload
+            }
+          }}
+          className="btn btn-secondary"
+        >
+          Load Next Game
+        </button>
+      </div>
         <section className="score-board-sec">
           <div className="container small-container">
-            <div className="score-top pd cmn-box pt-30">
+            <div className="score-top pd cmn-box p-30">
               <h1>Game is ended.</h1>
             </div>
           </div>
@@ -198,7 +268,7 @@ export default function Home({ settings }: HomeProps) {
       <div className="wrapper no-data">
         <section className="score-board-sec">
           <div className="container small-container">
-            <div className="score-top pd cmn-box pt-30">
+            <div className="score-top pd cmn-box p-30">
               <h1>{message || "Field not found."}</h1>
             </div>
           </div>
@@ -212,7 +282,7 @@ export default function Home({ settings }: HomeProps) {
       <div className="wrapper no-data">
         <section className="score-board-sec">
           <div className="container small-container">
-            <div className="score-top pd cmn-box pt-30">
+            <div className="score-top pd cmn-box p-30">
               <h2>Please verify you are human to continue</h2>
               <div style={{ display: "flex", justifyContent: "center" }}>
                 <ReCAPTCHA
@@ -310,13 +380,14 @@ export default function Home({ settings }: HomeProps) {
       <div className="add-sec">
         <div className="container small-container">
           <div className="add-otr d-block d-xl-none">
+            
             <Swiper modules={[Autoplay]} autoplay={{ delay: adsTime, disableOnInteraction: false }} loop slidesPerView={1}>
               {getAds("top", "mobile").map((ad: any, idx: number) => (
                 <SwiperSlide key={idx}>
                   <Ads image={ad.imageUrl || ad.image} link={ad.link} />
                 </SwiperSlide>
               ))}
-            </Swiper>
+            </Swiper> 
           </div>
           <div className="add-otr d-none d-xl-block">
             <Swiper modules={[Autoplay]} autoplay={{ delay: adsTime, disableOnInteraction: false }} loop slidesPerView={1}>
