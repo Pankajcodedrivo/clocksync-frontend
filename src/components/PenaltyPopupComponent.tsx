@@ -103,7 +103,6 @@ const PenaltyPopupComponent: React.FC<PenaltyPopupProps> = ({
               >
                 <option value="slashing">Slashing</option>
                 <option value="holding">Holding</option>
-                <option value="pushing">Pushing</option>
                 <option value="illegal-body-check">Illegal Body Check</option>
                 <option value="interference">Interference</option>
                 <option value="cross-check">Cross-Check</option>

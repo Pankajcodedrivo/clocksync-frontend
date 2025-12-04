@@ -301,6 +301,27 @@ div:where(.swal2-container) h2:where(.swal2-title) {
     margin-bottom:20px;
 }
 
+.search-player.type-input{
+    margin-top: 10px;
+    input{
+        width: 80% !important;
+        margin-right: 12px;
+    }
+    .btn{
+        height: 50px;
+    }
+    @media (max-width: 768px) {
+        input {
+            width: 65% !important;
+        }
+    }
+}
+.remove-penalty {
+    margin-left: 10px;
+    color: #D90000 !important;
+    text-decoration: underline !important;
+    cursor: pointer;
+}
 .cmn-box {
     background: linear-gradient(180deg, rgba(15, 23, 42, 0.8) 0%, rgba(15, 23, 42, 0.8) 37.37%, rgba(15, 23, 42, 0.8) 82.23%);
     border-radius: 20px;

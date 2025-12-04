@@ -38,6 +38,7 @@ export default function ActivePenalties({
             <th>Team</th>
             <th>Type</th>
             <th>Player No</th>
+            <th>Quarter</th>
             <th>Infraction</th>
             <th>Start</th>
             <th>End</th>
@@ -69,8 +70,9 @@ export default function ActivePenalties({
                 <td>{teamName}</td>
                 <td className="text-capitalize">{p.penaltyType}</td>
                 <td>
-                  <span className="number">{p.playerNo}</span>
+                  <span className="number">#{p.playerNo}</span>
                 </td>
+                <td><span className="number">Q{p.quarter}</span></td>
                 <td>
                   <span className="text-capitalize">{p.infraction}</span>
                 </td>

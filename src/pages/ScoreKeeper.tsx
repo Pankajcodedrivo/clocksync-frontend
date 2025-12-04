@@ -154,7 +154,7 @@ export default function ScoreKeeper() {
                   </div>
               </div>
             </div>
-            <ScoreKeeperComponent gameStatistics={gameStatistics} game={game} />
+            <ScoreKeeperComponent gameStatistics={gameStatistics} game={game} socketEmit={emit} />
           </div>
           <div className="actions-outer-wrap">
               <div className="action-inner row g-5">

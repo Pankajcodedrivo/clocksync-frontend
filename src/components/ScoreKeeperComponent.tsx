@@ -4,9 +4,10 @@ import iconaway from "../assets/images/red-icon.svg";
 interface Props {
   gameStatistics: any;
   game: any;
+  socketEmit: (event: string, payload: any) => void;
 }
 
-export default function ScoreKeeperComponent({ gameStatistics, game }: Props) {
+export default function ScoreKeeperComponent({ gameStatistics, game, socketEmit }: Props) {
   const clock = gameStatistics?.clock;
 
   // -------------------------
@@ -51,6 +52,10 @@ export default function ScoreKeeperComponent({ gameStatistics, game }: Props) {
   const homeStats = home?.stats || {};
   const awayStats = away?.stats || {};
 
+  const removePenalty = (id:any) => {
+    socketEmit("removePenalty", { id , gameId:game?._id });
+  };
+
   return (
     <div className="score-board-otr">
       <div className="row g-5 score-keeper justify-content-center">
@@ -74,6 +79,8 @@ export default function ScoreKeeperComponent({ gameStatistics, game }: Props) {
                     <div className="penalty-time">
                       {homePenalty.remainingMinutes}:
                       {homePenalty.remainingSeconds.toString().padStart(2, "0")}
+                      
+                      <a className="remove-penalty" onClick={()=>removePenalty(homePenalty._id)}>remove</a>
                     </div>
                   </div>
 
@@ -129,6 +136,7 @@ export default function ScoreKeeperComponent({ gameStatistics, game }: Props) {
                     <div className="penalty-time">
                       {awayPenalty.remainingMinutes}:
                       {awayPenalty.remainingSeconds.toString().padStart(2, "0")}
+                      <a className="remove-penalty" onClick={()=>removePenalty(homePenalty._id)}>remove</a>
                     </div>
                   </div>
 

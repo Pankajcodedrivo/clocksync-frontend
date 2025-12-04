@@ -48,21 +48,33 @@ export default function Home({ settings }: HomeProps) {
   const [playedTwoMin, setPlayedTwoMin] = useState(false);
   const [playedEnd, setPlayedEnd] = useState(false);
   const lastTimeRef = useRef<{ minute: number; second: number } | null>(null);
-   const audioTwoMin = useRef<HTMLAudioElement | null>(null);
+  const audioTwoMin = useRef<HTMLAudioElement | null>(null);
   const audioEnd = useRef<HTMLAudioElement | null>(null);
   const penaltyMusic = useRef<HTMLAudioElement | null>(null);
 
+  // Create audio objects AFTER unlock gesture (captcha)
   useEffect(() => {
-    const isVerified = sessionStorage.getItem("captchaVerified");
-    if (isVerified === "true") {
-      setVerified(true);
-    }
+    if (!audioTwoMin.current) audioTwoMin.current = new Audio(twoMinutesSound);
+    if (!audioEnd.current) audioEnd.current = new Audio(timeUpSound);
+    if (!penaltyMusic.current) penaltyMusic.current = new Audio(penaltySound);
   }, []);
-  useEffect(() => {
-    audioTwoMin.current = new Audio(twoMinutesSound);
-    audioEnd.current = new Audio(timeUpSound);
-    penaltyMusic.current= new Audio(penaltySound);
-  }, []);
+
+
+  const unlockSafariAudio = () => {
+    const audios = [audioTwoMin.current, audioEnd.current, penaltyMusic.current].filter(
+    Boolean
+    ) as HTMLAudioElement[];
+    audios.forEach((a) => {
+        a.muted = true;
+        a.play()
+        .then(() => {
+        a.pause();
+        a.currentTime = 0;
+        a.muted = false;
+      })
+      .catch(() => {});
+    });
+  };
 
   const handleCaptcha = async (value: string | null) => {
     if (!value) return;
@@ -70,6 +82,7 @@ export default function Home({ settings }: HomeProps) {
       const data = await getVerifiedCaptcha(value);
       if (data.success && data.human) {
         setVerified(true);
+        unlockSafariAudio();
         sessionStorage.setItem("captchaVerified", "true");
       } else {
         showErrorToast("Bot detected ❌");
