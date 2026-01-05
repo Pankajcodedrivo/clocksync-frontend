@@ -108,6 +108,7 @@ const PenaltyPopupComponent: React.FC<PenaltyPopupProps> = ({
                 <option value="cross-check">Cross-Check</option>
                 <option value="yellow card">Yellow Card</option>
                 <option value="red card">Red Card</option>
+                <option value="other">Other</option>
               </select>
             </div>
 

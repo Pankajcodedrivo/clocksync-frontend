@@ -102,12 +102,12 @@ export default function ScoreKeeperComponent({ gameStatistics, game, socketEmit 
                   <strong>Saves</strong>
                   <span>{homeStats.save ?? homeStats.save ?? 0}</span>
                 </li>
-                {/*
+                
                 <li>
                   <strong>Draws</strong>
                   <span>{homeStats.drawW ?? 0}/{homeStats.drawL ?? 0}</span>
                 </li>
-                  */}
+                  
                 <li>
                   <strong>TO</strong>
                   <span>{homeStats.turnoverForced ?? 0}/{homeStats.turnoverUnforced ?? 0}</span>
@@ -158,12 +158,12 @@ export default function ScoreKeeperComponent({ gameStatistics, game, socketEmit 
                   <strong>Saves</strong>
                   <span>{awayStats.save ?? awayStats.save ?? 0}</span>
                 </li>
-                {/*
+                
                 <li>
                   <strong>Draws</strong>
                   <span>{awayStats.drawW ?? 0}/{awayStats.drawL ?? 0}</span>
                 </li>
-                  */}
+                  
                 <li>
                   <strong>TO</strong>
                   <span>{awayStats.turnoverForced ?? 0}/{awayStats.turnoverUnforced ?? 0}</span>

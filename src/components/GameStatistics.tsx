@@ -32,26 +32,26 @@ export default function GameStatistics({ gameStatistics,game }: Props) {
             </div>
             <div className="statictics-wrapper">
                 <div className="row statictics-otr">
-                    <div className="col-4 statictics-innr">
+                    <div className="col-3 statictics-innr">
                         <h4 className="sm">SHOTS</h4>
                         <div className="count-inn gap-10">
                             <p className="blue sm">{homeStats.shotOn ?? 0}/{homeStats.shotOff ?? 0} <span>-</span> {awayStats.shotOn ?? 0}/{awayStats.shotOff ?? 0}</p>
                         </div>
                     </div>
-                    <div className="col-4 statictics-innr">
+                    <div className="col-3 statictics-innr">
                         <h4 className="sm">SAVES</h4>
                         <div className="count-inn gap-10">
                             <p className="green sm">{homeStats.save ?? homeStats.save ?? 0} <span>-</span> {awayStats.save ?? awayStats.save ?? 0}</p>
                         </div>
                     </div>
-                    {/*<div className="col-3 statictics-innr">
+                    <div className="col-3 statictics-innr">
                         <h4 className="sm">Draws</h4>
                         <div className="count-inn gap-10">
                             <p className="orange sm"> {homeStats.drawW ?? 0}/{homeStats.drawL ?? 0} <span>-</span> {awayStats.drawW ?? 0}/{awayStats.drawL ?? 0}</p>
                         </div>
                     </div>
-                    */}
-                    <div className="col-4 statictics-innr">
+                    
+                    <div className="col-3 statictics-innr">
                         <h4 className="sm">TO</h4>
                         <div className="count-inn gap-10">
                             <p className="blue sm">{homeStats.turnoverForced ?? 0}/{homeStats.turnoverUnforced ?? 0} <span>-</span> {awayStats.turnoverForced ?? 0}/{awayStats.turnoverUnforced ?? 0}</p>

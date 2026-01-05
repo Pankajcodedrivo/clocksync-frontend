@@ -21,6 +21,7 @@ import {
   FaLinkedin,
   FaTelegram,
   FaReddit,
+  FaInstagram,
 } from "react-icons/fa";
 import "swiper/css";
 import { showErrorToast } from "../utils/toast/toast";
@@ -51,7 +52,10 @@ export default function Home({ settings }: HomeProps) {
   const audioTwoMin = useRef<HTMLAudioElement | null>(null);
   const audioEnd = useRef<HTMLAudioElement | null>(null);
   const penaltyMusic = useRef<HTMLAudioElement | null>(null);
-  
+  const isMobileDevice = () => {
+    return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  };
+
 
   // Create audio objects AFTER unlock gesture (captcha)
   useEffect(() => {
@@ -150,6 +154,23 @@ export default function Home({ settings }: HomeProps) {
         case "reddit":
           window.open(`https://reddit.com/submit?url=${encodedUrl}&title=${encodedMessage}`, "_blank");
           break;
+
+        case "instagram":
+        if (!isMobileDevice()) {
+          showErrorToast("Instagram sharing is available on mobile only.");
+          return;
+        }
+
+        if (navigator.share) {
+          await navigator.share({
+            title: "Live Game Scoreboard",
+            text: "Check out this live game scoreboard!",
+            url: shareUrl,
+          });
+        } else {
+          showErrorToast("Instagram sharing not supported on this device.");
+        }
+        break;
       }
     } catch (err) {
       console.error("Share failed:", err);
@@ -203,7 +224,12 @@ export default function Home({ settings }: HomeProps) {
         }
       }
     },
-    gameEnded: () => setEndGame(true),
+    gameEnded: () => {
+      setEndGame(true);
+      audioEnd.current?.play().catch(err => console.error(err));
+      setPlayedEnd(true);
+
+    },
     scoreUpdated: (stats: any) => setGameStatistics(stats),
     statUpdated: (stats: any) => setGameStatistics(stats),
      // actionAdded event contains the raw action payload (emitted by server)
@@ -301,7 +327,7 @@ export default function Home({ settings }: HomeProps) {
               <h2>Please verify you are human to continue</h2>
               <div style={{ display: "flex", justifyContent: "center" }}>
                 <ReCAPTCHA
-                  sitekey="6LefqwAsAAAAALvrolPDrDZxYV4nJiy0mBWWyd8H"
+                  sitekey="6Le-NC0sAAAAAPeyL_hmUHAbQ43wMae28j6dp7kJ"
                   onChange={handleCaptcha}
                 />
               </div>
@@ -379,6 +405,13 @@ export default function Home({ settings }: HomeProps) {
               <FaLinkedin color="#0077b5" onClick={() => handleSharePlatform("linkedin")} cursor="pointer" />
               <FaTelegram color="#0088cc" onClick={() => handleSharePlatform("telegram")} cursor="pointer" />
               <FaReddit color="#ff4500" onClick={() => handleSharePlatform("reddit")} cursor="pointer" />
+              {isMobileDevice() && (
+                <FaInstagram
+                  color="#E4405F"
+                  onClick={() => handleSharePlatform("instagram")}
+                  cursor="pointer"
+                />
+              )}
             </div>
 
             <button

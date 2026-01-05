@@ -2,6 +2,7 @@ import hugeiconsAdd from "../assets/images/hugeicons_node-add.svg";
 import octiconGoal from "../assets/images/octicon_goal.svg";
 import icRoundAdjust from "../assets/images/ic_round-adjust.svg";
 import crossCircle from "../assets/images/mdi_cross-circle-outline.svg";
+import checkboxBlank from "../assets/images/mdi_checkbox-blank.svg"
 import saveOutline from "../assets/images/light_save-outline.svg";
 import user from "../assets/images/lucide_user.svg";
 import penaltyIcon from "../assets/images/penaltyicon.svg";
@@ -123,27 +124,27 @@ export default function ActionComponent({ game,running,teamName, socketEmit }: P
             </button>
 
             {/* Save */}
-            <button className="btn" onClick={() => handleOtherClick("Save")}>
+            <button className="btn" onClick={() => handleWithoutPlayerClick("Save")}>
                 <img src={saveOutline} alt="Save" /> Save
             </button>
 
             {/* GB */}
-            <button className="btn" onClick={() => handleOtherClick("GB")}>
+            <button className="btn" onClick={() => handleWithoutPlayerClick("GB")}>
                 <img src={user} alt="GB" /> GB
             </button>
 
             {/* Draw W */}
-            {/*
-            <button className="btn" onClick={() => handleOtherClick("Draw W")}>
+            
+            <button className="btn" onClick={() => handleWithoutPlayerClick("Draw W")}>
                 <img src={checkboxBlank} alt="Draw W" /> Draw W
             </button>
-            */}
+            
 
             {/* Draw L */}
-            {/*
-            <button className="btn" onClick={() => handleOtherClick("Draw L")}>
+            
+            <button className="btn" onClick={() => handleWithoutPlayerClick("Draw L")}>
                 <img src={crossCircle} alt="Draw L" /> Draw L
-            </button> */}
+            </button> 
 
             {/* TO-F */}
             <button className="btn" onClick={() => handleWithoutPlayerClick("TO - F")}>
