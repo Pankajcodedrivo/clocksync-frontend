@@ -44,7 +44,7 @@ export default function Home({ settings }: HomeProps) {
   const [notFound, setNotFound] = useState(false);
   const [message, setMessage] = useState("");
   const [endGame, setEndGame] = useState(false);
-  const [verified, setVerified] = useState<boolean>(false);
+  const [verified, setVerified] = useState<boolean>(true);
   const [showPopup, setShowPopup] = useState(false);
   const [playedTwoMin, setPlayedTwoMin] = useState(false);
   const [playedEnd, setPlayedEnd] = useState(false);
